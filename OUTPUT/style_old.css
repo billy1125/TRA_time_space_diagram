@@ -1,0 +1,65 @@
+line {
+    stroke-width:0.5;
+    stroke-dasharray:5,5
+}
+
+.hour_line {
+    stroke:#666666;
+}
+
+.min10_line {
+    stroke:#4dff4d;
+}
+
+.min30_line {
+    stroke:#b300b3;
+}
+
+.station_line {
+    stroke:#b300b3;
+}
+
+.station_noserv_line {
+    stroke:#bfbfbf;
+}
+
+path {
+    stroke-width:1.5;
+    fill:none
+}
+
+.taroko {
+    stroke:#a6a6a6;
+}
+
+.puyuma {
+    stroke:#ff0000;
+}
+
+.tze_chiang {
+    stroke:#ff6600;
+}
+
+.tze_chiang_diesel {
+    stroke:#ff9933;
+}
+
+.chu_kuang {
+    stroke:#ffcc00;
+}
+
+.local {
+    stroke:#0000cc;
+}
+
+.fu_hsing {
+    stroke:#7094db;
+}
+
+.ordinary {
+    stroke:#000000;
+}
+
+.special {
+    stroke:#4dff4d;
+}
