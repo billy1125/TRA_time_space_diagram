@@ -1,7 +1,7 @@
 #運行圖SVG繪製
 import csv
 import svgwrite
-
+import time
 import pandas as pd # 引用套件並縮寫為 pd
 import numpy as np
 
@@ -81,9 +81,10 @@ class Draw:
 
     #繪製基底圖
     def draw_background(self, version):
-        # link = self.dwg.add(svgwrite.container.Hyperlink('http://stackoverflow.com'))
-        # link.add(self.dwg.rect((5, 1), (50, 25), 5, class_='fill:red;stroke:black;stroke-width:5;opacity:0.5'))
-        self.dwg.add(self.dwg.text(dict_line_kind[self.line] + ' 日期：' + self.date +'，運行圖均來自台鐵公開資料所分析，僅供參考，正確資料與實際運轉狀況請以台鐵網站或公告為主。台鐵JSON Open Data轉檔運行圖程式版本：' + version, insert=(5, 20), fill='#000000'))
+        localtime = time.asctime(time.localtime(time.time()))
+
+        self.dwg.add(self.dwg.text(dict_line_kind[self.line] + ' 日期：' + self.date +'，運行圖均來自台鐵公開資料所分析，僅供參考，正確資料與實際運轉狀況請以台鐵網站或公告為主。台鐵JSON Open Data轉檔運行圖程式版本：' + version + ' 轉檔時間：' + localtime, insert=(5, 20), fill='#000000'))
+
         #時間線
 
         #小時
