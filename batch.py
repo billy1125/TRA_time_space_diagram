@@ -11,22 +11,12 @@ from progessbar import progress
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-if len(sys.argv) == 2:
-    argv_json_location = sys.argv[1] #參數1: JSON 檔位置
-    argv_website_svg_location = sys.argv[2] #參數2: 運行圖檔案存檔位置
-else:
-    argv_json_location = 'JSON'
-    argv_website_svg_location = 'OUTPUT'
-
 # 程式執行段
-def main():
+def main(argv_json_location, argv_website_svg_location, argv_train_no):
 
     version = '1.0b'
     txt_output = ''
     json_files = []
-
-    global argv_json_location
-    global argv_website_svg_location
 
     check_output_folder(argv_website_svg_location)
     
@@ -45,7 +35,7 @@ def main():
             count = 0
 
             data = dg.read_json(filename)
-            trains = dg.find_trains(data, '') #特定車次的基本資料
+            trains = dg.find_trains(data, argv_train_no) #特定車次的基本資料
             total = len(trains)
 
             website_svg_location = argv_website_svg_location
@@ -129,7 +119,7 @@ def check_output_folder(path):
                'pingtung', 'south_link', 'taitung', 'north_link', 'yilan',
                'pingxi', 'neiwan', 'jiji', 'shalun']
 
-    output_folder = os.listdir('OUTPUT')
+    output_folder = os.listdir(path)
 
     diff = list(set(folders).difference(set(output_folder)))
 
@@ -139,4 +129,16 @@ def check_output_folder(path):
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) == 4:
+        argv_json_location = sys.argv[1]  # 參數1: JSON 檔位置
+        argv_website_svg_location = sys.argv[2]  # 參數2: 運行圖檔案存檔位置
+        argv_train_no = sys.argv[3]  # 參數3: 特定車次繪製
+    else:
+        argv_json_location = 'JSON'
+        argv_website_svg_location = 'OUTPUT'
+        argv_train_no = 'ALL'
+
+    if argv_train_no == 'ALL':
+        argv_train_no = ''
+
+    main(argv_json_location, argv_website_svg_location, argv_train_no)
