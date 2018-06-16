@@ -2,7 +2,6 @@ from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import urllib.request
 import zipfile
-
 import os
 import sys
 
@@ -71,7 +70,9 @@ def download_tra_json(url_json):
 items = read_url("http://163.29.3.98/json/")
 last_file_number = len(items) - 2
 download_tra_json(items[last_file_number])
+download_tra_json(items[1])
 
-# for item in read_url("http://163.29.3.98/json/"):
-#     print(item[0])
-#     download_tra_json(item)
+##for item in read_url("http://163.29.3.98/json/"):
+##    print(item[0])
+##    download_tra_json(item)
+
