@@ -4,7 +4,7 @@ import os
 from os import walk
 import io
 
-#自訂class與module
+# 自訂class與module
 import diagram as dg
 import svg_save
 from progessbar import progress
@@ -35,7 +35,7 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
             count = 0
 
             data = dg.read_json(filename)
-            trains = dg.find_trains(data, argv_train_no) #特定車次的基本資料
+            trains = dg.find_trains(data, argv_train_no) # 特定車次的基本資料
             total = len(trains)
 
             website_svg_location = argv_website_svg_location
@@ -60,36 +60,49 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
                 count += 1
                 progress(count, total, '')
 
-                train_id = train_no['Train'] #車次號
-                car_class = train_no['CarClass'] #車種
-                line = train_no['Line'] #山線1、海線2、其他0
-                over_night_stn = train_no['OverNightStn'] #跨午夜車站
+                train_id = train_no['Train'] # 車次號
+                car_class = train_no['CarClass'] # 車種
+                line = train_no['Line'] # 山線1、海線2、其他0
+                over_night_stn = train_no['OverNightStn'] # 跨午夜車站
+                line_dir = train_no['LineDir'] # 順逆行
 
-                list_start_end_station = dg.find_train_stations(train_no) #查詢台鐵時刻表中，特定車次所有停靠車站
+                list_start_end_station = dg.find_train_stations(train_no) # 查詢台鐵時刻表中，特定車次所有停靠車站
 
-                list_passing_stations = dg.find_stations(list_start_end_station, train_no['Line'], train_no['LineDir']) #查詢特定車次所有停靠與通過車站
+                # print(list_start_end_station)
+
+                list_passing_stations = dg.find_stations(list_start_end_station, train_no['Line'], train_no['LineDir']) # 查詢特定車次所有停靠與通過車站
+
+                # print(list_passing_stations)
 
                 midnight_km = 0
 
                 if over_night_stn != '0':
-                    midnight_km = dg.midnight_train(list_start_end_station, list_passing_stations, over_night_stn)
+                    midnight_km = dg.midnight_train(list_start_end_station, list_passing_stations, over_night_stn) # 跨夜車次處理
 
-                train_time_space = dg.train_time_to_stations(list_start_end_station, list_passing_stations, midnight_km) #估算特定車次通過車站通過時間
+                train_time_space = dg.train_time_to_stations(list_start_end_station, list_passing_stations, midnight_km) # 估算特定車次通過車站通過時間
 
+                temp = []
 
-                svg_output_WN.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_WS.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_WM.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_WSEA.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_P.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_S.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_T.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_N.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_I.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_PX.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_NW.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_J.draw_trains(train_time_space, train_id, car_class, line)
-                svg_output_SL.draw_trains(train_time_space, train_id, car_class, line)
+                if 'End' in list_start_end_station: # 環島車次處理(例如51、52車次)，將停靠車站拆成三段分別處理(台北-八堵、八堵-竹南、竹南-台北)
+                    temp = dg.roundabout_train(train_time_space, line_dir)
+                else:
+                    temp.append(train_time_space)
+
+                # print(train_time_space)
+                for item in temp:
+                    svg_output_WN.draw_trains(item, train_id, car_class, line)
+                    svg_output_WS.draw_trains(item, train_id, car_class, line)
+                    svg_output_WM.draw_trains(item, train_id, car_class, line)
+                    svg_output_WSEA.draw_trains(item, train_id, car_class, line)
+                    svg_output_P.draw_trains(item, train_id, car_class, line)
+                    svg_output_S.draw_trains(item, train_id, car_class, line)
+                    svg_output_T.draw_trains(item, train_id, car_class, line)
+                    svg_output_N.draw_trains(item, train_id, car_class, line)
+                    svg_output_I.draw_trains(item, train_id, car_class, line)
+                    svg_output_PX.draw_trains(item, train_id, car_class, line)
+                    svg_output_NW.draw_trains(item, train_id, car_class, line)
+                    svg_output_J.draw_trains(item, train_id, car_class, line)
+                    svg_output_SL.draw_trains(item, train_id, car_class, line)
 
             txt_output += svg_output_WN.save()
             txt_output += svg_output_WS.save()
