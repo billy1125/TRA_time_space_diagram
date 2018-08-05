@@ -135,7 +135,7 @@ class Draw:
         to_count_stations = True
         check_number = 0
         midnight = -1
-        color = dict_car_kind[car_class]
+        color = dict_car_kind.get(car_class, 'ordinary')
         midnight_loc = -1
         cheng_zhui_passing = {'1321': 0, '1118': 0}
         cheng_zhui_local = False
