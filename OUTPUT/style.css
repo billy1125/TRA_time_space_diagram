@@ -1,23 +1,22 @@
-
 line {
-    stroke-width:0.5;
-    stroke-dasharray:5,5
+    stroke-width:0.3;
+    
 }
 
 .hour_line {
-    stroke:#666666;
+    stroke:#000000;
 }
 
 .min10_line {
-    stroke:#4dff4d;
+    stroke:#a18cfc;
 }
 
 .min30_line {
-    stroke:#b300b3;
+    stroke:#0105e0;
 }
 
 .station_line {
-    stroke:#b300b3;
+    stroke:#000000;
 }
 
 .station_noserv_line {
@@ -25,7 +24,7 @@ line {
 }
 
 path {
-    stroke-width:1.5;
+    stroke-width:2.0;
     fill:none
 }
 
@@ -38,11 +37,21 @@ path {
 }
 
 .tze_chiang {
-    stroke:#ff6600;
+    stroke:#c98671;
 }
 
 .tze_chiang_diesel {
-    stroke:#ff9933;
+    stroke:#ff8000;
+}
+
+.emu1200{
+    stroke: #ff008c;
+	stroke-dasharray:25,5;
+}
+
+.emu300{
+    stroke:#ff4444;
+	stroke-dasharray:25,5;
 }
 
 .chu_kuang {
