@@ -1,5 +1,3 @@
-import json
-
 import pandas as pd # 引用套件並縮寫為 pd
 import numpy as np
 
@@ -12,28 +10,6 @@ stations = basic_data.stations()
 
 #時間轉換(Locate.csv)
 time_loc = basic_data.time_loc()
-
-#讀取台鐵JSON
-def read_json(filename):
-    with open('JSON/' + filename, 'r', encoding='utf8') as data_file:    
-        data = json.load(data_file)
-    
-    return data
-
-#找出每一個車次
-def find_trains(data, train_no):
-
-    trains = []
-
-    if train_no == '':
-        for x in data['TrainInfos']: #逐車次搜尋
-            trains.append(x)
-    elif train_no != '':
-        for x in data['TrainInfos']: #逐車次搜尋
-            if x['Train'] == train_no:
-                trains.append(x)
-
-    return trains
 
 #找出每一個車次的表定經過車站
 def find_train_stations(train_no):
@@ -225,7 +201,7 @@ def train_time_to_stations(list_start_end_station, list_passing_stations, nidmig
     for item in list_passing_stations:
 
         if nidmight_km != 0: #非車站內跨午夜處理，將跨午夜車站通過時間增加1440與0，之後在svg_save重複繪製兩次
-            if item[3] > nidmight_km and midnightOK == False:
+            if item[3] > float(nidmight_km) and midnightOK == False:
                 station_id.append('-1')
                 station.append('跨午夜')
                 loc.append(nidmight_km)
@@ -345,7 +321,7 @@ def midnight_train(list_start_end_station, list_passing_stations, over_night_stn
     # print(select_df[select_df.loc[:,"Station ID"] == '-1'].iloc[0, 0])
 
     if midnight_in_station == False: #如果跨午夜車次不是在車站內跨夜，才將資料帶出
-        nidmight_km = select_df[select_df.loc[:,"Station ID"] == '-1'].iloc[0, 0]
+        nidmight_km = select_df[select_df.loc[:,"Station ID"] == '-1'].iloc[0, 2]
 
     return nidmight_km
 
@@ -372,22 +348,23 @@ def roundabout_train(train_time_space, line_dir):
         time = []
         loc = []
         temp = []
+
         if i in [1, 2]:
             row_number -= 1
         while True:
             row_number += 1
             temp.append(train_time_space.iloc[row_number])
 
-            station_id.append(train_time_space.iloc[row_number, 1])
             station.append(train_time_space.iloc[row_number, 0])
+            time.append(train_time_space.iloc[row_number, 1])
+            station_id.append(train_time_space.iloc[row_number, 2])
             loc.append(train_time_space.iloc[row_number, 3])
-            time.append(train_time_space.iloc[row_number, 2])
 
             if i == 2 and row_number == len(train_time_space) - 1:
                 break
-            if i == 0 and train_time_space.iloc[row_number, 1] == number1:
+            if i == 0 and train_time_space.iloc[row_number, 2] == number1:
                 break
-            if i == 1 and train_time_space.iloc[row_number, 1] == number2:
+            if i == 1 and train_time_space.iloc[row_number, 2] == number2:
                 break
 
         dict = {"Station": station, "Time": time, "Loc": loc, "Station ID": station_id}

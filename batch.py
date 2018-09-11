@@ -5,6 +5,7 @@ from os import walk
 import io
 
 # 自訂class與module
+import read_tra_json as tra_json
 import diagram as dg
 import svg_save
 from progessbar import progress
@@ -14,7 +15,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 # 程式執行段
 def main(argv_json_location, argv_website_svg_location, argv_train_no):
 
-    version = '1.0b'
+    version = '1.0b1'
     txt_output = ''
     json_files = []
 
@@ -34,8 +35,8 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
 
             count = 0
 
-            data = dg.read_json(filename)
-            trains = dg.find_trains(data, argv_train_no) # 特定車次的基本資料
+            data = tra_json.read_json(filename)
+            trains = tra_json.find_trains(data, argv_train_no) # 特定車次的基本資料
             total = len(trains)
 
             website_svg_location = argv_website_svg_location
@@ -58,13 +59,15 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
             for train_no in trains:
 
                 count += 1
-                progress(count, total, '')
+
 
                 train_id = train_no['Train'] # 車次號
                 car_class = train_no['CarClass'] # 車種
                 line = train_no['Line'] # 山線1、海線2、其他0
                 over_night_stn = train_no['OverNightStn'] # 跨午夜車站
                 line_dir = train_no['LineDir'] # 順逆行
+
+                progress(count, total, "目前正在轉換: 車次" + train_id)
 
                 list_start_end_station = dg.find_train_stations(train_no) # 查詢台鐵時刻表中，特定車次所有停靠車站
 
@@ -88,7 +91,7 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
                 else:
                     temp.append(train_time_space)
 
-                # print(train_time_space)
+                # print(temp)
                 for item in temp:
                     svg_output_WN.draw_trains(item, train_id, car_class, line)
                     svg_output_WS.draw_trains(item, train_id, car_class, line)
@@ -103,6 +106,7 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
                     svg_output_NW.draw_trains(item, train_id, car_class, line)
                     svg_output_J.draw_trains(item, train_id, car_class, line)
                     svg_output_SL.draw_trains(item, train_id, car_class, line)
+
 
             txt_output += svg_output_WN.save()
             txt_output += svg_output_WS.save()
@@ -119,9 +123,10 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
             txt_output += svg_output_SL.save()
 
             txt_output += '完成 ok \n'
+            print("檔案轉換完成！所有車次數量：" + str(total) + "，已轉換車次數量：" + str(count) + '\n')
 
-            if os.path.exists('JSON/' + filename):
-                os.remove('JSON/' + filename)
+            # if os.path.exists('JSON/' + filename):
+            #     os.remove('JSON/' + filename)
 
     f = open('log.txt', 'w', encoding='utf-8')
     f.write(txt_output)
@@ -140,6 +145,11 @@ def check_output_folder(path):
         for item in diff:
             os.makedirs(path + '/' + item)
 
+
+# def traceback(err):
+#     #now = time.strftime('%H:%M:%S', time.localtime(time.time()))
+#     traceback = sys.exc_info()[2]
+#     print(err, 'exception in line', traceback.tb_lineno)
 
 if __name__ == "__main__":
     if len(sys.argv) == 4:
