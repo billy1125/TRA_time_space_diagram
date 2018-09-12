@@ -125,8 +125,8 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
             txt_output += '完成 ok \n'
             print("檔案轉換完成！所有車次數量：" + str(total) + "，已轉換車次數量：" + str(count) + '\n')
 
-            # if os.path.exists('JSON/' + filename):
-            #     os.remove('JSON/' + filename)
+            if os.path.exists('JSON/' + filename):
+                os.remove('JSON/' + filename)
 
     f = open('log.txt', 'w', encoding='utf-8')
     f.write(txt_output)
@@ -152,16 +152,27 @@ def check_output_folder(path):
 #     print(err, 'exception in line', traceback.tb_lineno)
 
 if __name__ == "__main__":
+    Parameters = [] # 參數集：參數1: JSON 檔位置, 參數2: 運行圖檔案存檔位置, 參數3: 特定車次繪製
+
     if len(sys.argv) == 4:
-        argv_json_location = sys.argv[1]  # 參數1: JSON 檔位置
-        argv_website_svg_location = sys.argv[2]  # 參數2: 運行圖檔案存檔位置
-        argv_train_no = sys.argv[3]  # 參數3: 特定車次繪製
+        Parameters.append(sys.argv[1])
+        Parameters.append(sys.argv[2])
+        Parameters.append(sys.argv[3])
     else:
-        argv_json_location = 'JSON'
-        argv_website_svg_location = 'OUTPUT'
-        argv_train_no = 'ALL'
+        Parameters.append('JSON')
+        Parameters.append('OUTPUT')
 
-    if argv_train_no == 'ALL':
-        argv_train_no = ''
+        action = input('您需要執行特定車次嗎？不需要請直接輸入Enter，或者輸入 "Y"：')
+        if action.lower() == 'y':
+            action = input('請問特定車次號碼？(請輸入車次號)：')
+            if action != '':
+                Parameters.append(action)
+            else:
+                Parameters.append('None')
+        else:
+            Parameters.append('')
 
-    main(argv_json_location, argv_website_svg_location, argv_train_no)
+    if Parameters[2] == 'ALL':
+        Parameters[2] = ''
+
+    main(Parameters[0], Parameters[1], Parameters[2])
