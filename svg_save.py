@@ -166,9 +166,9 @@ class Draw:
             # if self.stations_loc.__contains__(train_time_space.iloc[midnight - 1, 2]) and self.stations_loc.__contains__(train_time_space.iloc[midnight + 2, 2]):
             #     print(train_time_space.iloc[midnight - 1, 2])
             #     print(train_time_space.iloc[midnight + 2, 2])
-            if midnight != -1:
-                if self.stations_loc.__contains__(train_time_space.iloc[midnight - 1, 2]) and self.stations_loc.__contains__(train_time_space.iloc[midnight + 2, 2]):
-                    midnight_loc = self.midnight_train_loc(train_time_space, midnight)
+            # if midnight != -1:
+            if self.stations_loc.__contains__(train_time_space.iloc[midnight - 1, 2]) and self.stations_loc.__contains__(train_time_space.iloc[midnight + 2, 2]):
+                midnight_loc = self.midnight_train_loc(train_time_space, midnight)
                 
             if check_number > 2: #資料超過兩筆才繪製，避免只有顯示起點終點車站的車次被繪入
                 path = 'M'
@@ -202,9 +202,9 @@ class Draw:
 
                     i = midnight + 1
                     while True:
-                        if self.stations_loc.__contains__(train_time_space.iloc[i, 1]):
-                            x = round(train_time_space.iloc[i, 2] * 10 + 50, 4)
-                            y = round(self.stations_loc[train_time_space.iloc[i, 1]] + 50, 4)
+                        if self.stations_loc.__contains__(train_time_space.iloc[i, 2]):
+                            x = round(train_time_space.iloc[i, 1] * 10 + 50, 4)
+                            y = round(self.stations_loc[train_time_space.iloc[i, 2]] + 50, 4)
                             path += str(x) + ',' + str(y) + ' '
                         
                         i += 1
