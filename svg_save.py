@@ -261,9 +261,9 @@ class Draw:
         #         end = len(train_time_space.index)
 
         while True:
-            if self.stations_loc.__contains__(train_time_space.iloc[i, 1]):
-                x = round(train_time_space.iloc[i, 2] * 10 + 50, 4)
-                y = round(self.stations_loc[train_time_space.iloc[i, 1]] + 50, 4)
+            if self.stations_loc.__contains__(train_time_space.iloc[i, 2]):
+                x = round(train_time_space.iloc[i, 1] * 10 + 50, 4)
+                y = round(self.stations_loc[train_time_space.iloc[i, 2]] + 50, 4)
                 path += str(x) + ',' + str(y) + ' '
                 
             i += 1
