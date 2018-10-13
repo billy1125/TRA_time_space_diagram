@@ -1,8 +1,8 @@
 # 台鐵運行圖 Python 版
 import sys
 import os
-from os import walk
 import io
+import shutil
 
 # 自訂class與module
 import read_tra_json as tra_json
@@ -11,17 +11,17 @@ import svg_save
 from progessbar import progress
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-version = '1.0b2'
+version = '1.0b3'
 
 # 程式執行段
-def main(argv_json_location, argv_website_svg_location, argv_train_no):
+def main(argv_json_location, argv_website_svg_location, argv_select_trains):
 
     txt_output = ''
     json_files = []
 
     check_output_folder(argv_website_svg_location)
 
-    for root, dirs, files in walk(argv_json_location + '/'):
+    for root, dirs, files in os.walk(argv_json_location + '/'):
         for item in files:
             json_files.append(item)
 
@@ -35,7 +35,7 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
                 count = 0
 
                 data = tra_json.read_json(filename)
-                trains = tra_json.find_trains(data, argv_train_no) # 特定車次的基本資料
+                trains = tra_json.find_trains(data, argv_select_trains) # 特定車次的基本資料
                 total = len(trains)
 
                 website_svg_location = argv_website_svg_location
@@ -126,7 +126,7 @@ def main(argv_json_location, argv_website_svg_location, argv_train_no):
                 print("檔案轉換完成！所有車次數量：" + str(total) + "，已轉換車次數量：" + str(count) + "，無法轉換車次數量：" + str(total - count)+ '\n')
 
                 if os.path.exists('JSON/' + filename):
-                    os.remove('JSON/' + filename)
+                    shutil.move('JSON/' + filename, 'JSON_BACKUP/' + filename)
     else:
         print('無法執行！原因為沒有讀取到 JSON 檔案。\n')
 
@@ -170,11 +170,18 @@ if __name__ == "__main__":
 
         action = input('您需要執行特定車次嗎？不需要請直接輸入Enter，或者輸入 "Y"：\n')
         if action.lower() == 'y':
-            action = input('請問特定車次號碼？(請輸入車次號)：\n')
-            if action != '':
-                Parameters.append(action)
-            else:
-                Parameters.append('None')
+
+            select_trains = []
+
+            while True:
+                action = input('請問特定車次號碼？(請輸入車次號，如果有多個車次要選擇，請不斷輸入，要結束直接輸入Enter)：\n')
+
+                if action != '':
+                    select_trains.append(action)
+                if action == '':
+                    break
+
+            Parameters.append(select_trains)
         else:
             Parameters.append('')
 
