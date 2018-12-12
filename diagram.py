@@ -4,6 +4,20 @@ import numpy as np
 #自訂class與module
 import basic_data
 
+# 類別資料檔(Category.csv)
+category = basic_data.category()
+
+# 山海線車站，去除竹南與彰化，用於檢查是否是成追線車次
+Station_SEA = []
+Station_MOUNTAIN = []
+
+for item in category:
+    if item[0] == 'LINE_WSEA':
+        if item[1] not in ["1028", "1120"]:
+            Station_SEA.append(item[1])
+    if item[0] == 'LINE_WM':
+        if item[1] not in ["1028", "1120"]:
+            Station_MOUNTAIN.append(item[1])
 
 # 處理所有車站基本資訊(Stations.csv)
 stations = basic_data.stations()
@@ -12,7 +26,7 @@ stations = basic_data.stations()
 time_loc = basic_data.time_loc()
 
 # 找出每一個車次的表定經過車站
-def find_train_stations(train_no):
+def find_train_stations(train_no): # 2066 怪車次處理
 
     list_start_end_station = {}
     
@@ -24,6 +38,18 @@ def find_train_stations(train_no):
 
     return list_start_end_station
 
+# 判斷成追線車次
+def find_cheng_zhui(list_start_end_station, start_station, end_station):
+
+    result = False
+
+    if list_start_end_station.__contains__('1118') and list_start_end_station.__contains__('1321'):  # 區間車，具備成功、追分二站
+        result = True
+    elif (start_station in Station_SEA and end_station in Station_MOUNTAIN) or (
+                    start_station in Station_MOUNTAIN and end_station in Station_SEA):  # 區間快，起訖車站為山海線兩端車站
+        result = True
+
+    return result
     
 # 找出每一個車次所有會經過的車站，無論是否會停靠
 def find_stations(list_start_end_station, line, line_dir):
@@ -39,10 +65,8 @@ def find_stations(list_start_end_station, line, line_dir):
         end_station = start_station
         roundabout_train = True
 
-    # 判斷是不是成追線，目前均為區間車，並且具備成功、追分二站
-    cheng_zhui = False
-    if list_start_end_station.__contains__('1118') and list_start_end_station.__contains__('1321'):
-        cheng_zhui = True
+    # 判斷是不是成追線
+    cheng_zhui = find_cheng_zhui(list_start_end_station, start_station, end_station)
 
     # 判斷是不是內灣六家線，目前均為區間車，並且具備六家、竹東二站
     neiwan = False
@@ -179,7 +203,7 @@ def find_stations(list_start_end_station, line, line_dir):
                 break
 
         if len(temp) > 200:
-            print(len(temp))
+            ## print(len(temp))
             break
             
     list_passing_stations = temp

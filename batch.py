@@ -11,7 +11,7 @@ import svg_save
 from progessbar import progress
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-version = '1.0b3'
+version = '1.0b4'
 
 # 程式執行段
 def main(argv_json_location, argv_website_svg_location, argv_select_trains):

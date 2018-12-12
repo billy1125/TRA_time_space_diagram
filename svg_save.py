@@ -55,12 +55,11 @@ class Draw:
         self.location = location
         self.date = date
 
-        filename = ''
         if location == '':
-            filename = 'OUTPUT/' + line + '_' + date + '.svg'
+            self.file_name = 'OUTPUT/' + line + '_' + date + '.svg'
         else:
-            filename = location + date + '.svg'
-        self.file_name = filename
+            self.file_name = location + date + '.svg'
+
         self.line = line
         
 
@@ -114,18 +113,18 @@ class Draw:
         #車站線
         #dwg.add(dwg.line((50, 50), (14450, 50), style=style_01))
 
-        for item in self.stations_to_draw:
-            y = float(item[3]) + 50
-            if item[1] != 'NA':
+        for LineName, StationNumber, StationName, StationLoc in self.stations_to_draw:
+            y = float(StationLoc) + 50
+            if StationNumber != 'NA':
                 self.dwg.add(self.dwg.line((50, y), (14450, y), class_='station_line'))
             else:
                 self.dwg.add(self.dwg.line((50, y), (14450, y), class_='station_noserv_line'))
                 
             for i in range(0, 25):
-                if item[1] != 'NA':
-                    self.dwg.add(self.dwg.text(item[2], insert=(5 + i * 600, y - 5), fill='#000000'))
+                if StationNumber != 'NA':
+                    self.dwg.add(self.dwg.text(StationName, insert=(5 + i * 600, y - 5), fill='#000000'))
                 else:
-                    self.dwg.add(self.dwg.text(item[2], insert=(5 + i * 600, y - 5), fill='#bfbfbf'))
+                    self.dwg.add(self.dwg.text(StationName, insert=(5 + i * 600, y - 5), fill='#bfbfbf'))
 
         
 
@@ -152,7 +151,7 @@ class Draw:
                     check_number += 1 #確認資料有超過兩筆
                 if train_time_space.iloc[i, 2] == '-1' and train_time_space.iloc[i + 1, 2] == '-1':
                     midnight = i #找出跨午夜車次點
-                if self.line == 'LINE_WM': #判斷是不是有通過成功與追分
+                if self.line == 'LINE_WM' or self.line == 'LINE_WSEA': #判斷是不是有通過成功與追分
                     if train_time_space.iloc[i, 2] == '1321': #成功
                         cheng_zhui_passing['1321'] = i
                     elif train_time_space.iloc[i, 2] == '1118': #追分
@@ -252,13 +251,13 @@ class Draw:
             elif line_dir < 0:
                 i = 0
                 end = cheng_zhui_passing['1118']
-        # elif line == 'LINE_WSEA':
-        #     if line_dir > 0:
-        #         i = 0
-        #         end = cheng_zhui_passing['1118']
-        #     elif line_dir < 0:
-        #         i = cheng_zhui_passing['1321']
-        #         end = len(train_time_space.index)
+        elif line == 'LINE_WSEA':
+            if line_dir > 0:
+                i = 0
+                end = cheng_zhui_passing['1118']
+            elif line_dir < 0:
+                i = cheng_zhui_passing['1321']
+                end = len(train_time_space.index)
 
         while True:
             if self.stations_loc.__contains__(train_time_space.iloc[i, 2]):
