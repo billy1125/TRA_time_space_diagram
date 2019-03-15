@@ -25,6 +25,8 @@
 
 進度條程式碼則採用 Vladimir Ignatev 所設計的[程式](https://gist.github.com/davincif/3e1cb5ef1c4007d4f5ca690d68db8e7b)。
 
+svg 繪圖感謝 [nedwu](https://github.com/nedwu)的啟發，並且參考其[專案部分程式碼](https://github.com/nedwu/TRAOpenDataDiagramer)。
+
 > 以上套件為主要開發環境，若您採用非相同版本之 Python 與套件，執行上有任何錯誤歡迎交流。
 
 ## 使用方法
