@@ -21,7 +21,6 @@
 目前本程式主要於 Python 3.7 開發，除此之外本程式需要以下套件，包括：
 
 * [Pandas v0.23.4](https://github.com/pandas-dev/pandas) (用於列車推算通過車站時間)
-* [svgwrite v1.1.12](https://github.com/mozman/svgwrite) (用於繪製 SVG 格式之圖片)
 * [beautifulsoup4 v4.6.3](https://github.com/getanewsletter/BeautifulSoup4) (用於擷取台鐵 JSON)
 
 進度條程式碼則採用 Vladimir Ignatev 所設計的[程式](https://gist.github.com/davincif/3e1cb5ef1c4007d4f5ca690d68db8e7b)。
