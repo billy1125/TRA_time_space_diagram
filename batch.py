@@ -11,7 +11,7 @@ import svg_save
 from progessbar import progress
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-version = '1.0b4'
+version = '1.0b5'
 
 # 程式執行段
 def main(argv_json_location, argv_website_svg_location, argv_select_trains):
@@ -107,19 +107,19 @@ def main(argv_json_location, argv_website_svg_location, argv_select_trains):
                         svg_output_SL.draw_trains(item, train_id, car_class, line)
 
 
-                txt_output += svg_output_WN.save()
-                txt_output += svg_output_WS.save()
-                txt_output += svg_output_WM.save()
-                txt_output += svg_output_WSEA.save()
-                txt_output += svg_output_P.save()
-                txt_output += svg_output_S.save()
-                txt_output += svg_output_T.save()
-                txt_output += svg_output_N.save()
-                txt_output += svg_output_I.save()
-                txt_output += svg_output_PX.save()
-                txt_output += svg_output_NW.save()
-                txt_output += svg_output_J.save()
-                txt_output += svg_output_SL.save()
+                txt_output += svg_output_WN.save_file()
+                txt_output += svg_output_WS.save_file()
+                txt_output += svg_output_WM.save_file()
+                txt_output += svg_output_WSEA.save_file()
+                txt_output += svg_output_P.save_file()
+                txt_output += svg_output_S.save_file()
+                txt_output += svg_output_T.save_file()
+                txt_output += svg_output_N.save_file()
+                txt_output += svg_output_I.save_file()
+                txt_output += svg_output_PX.save_file()
+                txt_output += svg_output_NW.save_file()
+                txt_output += svg_output_J.save_file()
+                txt_output += svg_output_SL.save_file()
 
                 txt_output += '完成 ok \n'
                 print("\n")
