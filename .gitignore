@@ -106,7 +106,7 @@ venv.bak/
 ＃ my_setting
 .idea/
 .vscode/
-JSON/*.json
+JSON/2*.json
 *.svg
 log.txt
 .DS_Store
