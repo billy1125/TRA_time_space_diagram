@@ -3,6 +3,7 @@ import sys
 import os
 import io
 import shutil
+import time
 
 # 自訂class與module
 import read_tra_json as tra_json
@@ -60,6 +61,8 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
         for filename in json_files:
             if filename.split('.')[1] == 'json':
 
+                start = time.time()
+
                 print("目前進行日期" + filename.split('.')[0] + "轉檔。" + "\n")
 
                 # 讀取 JSON 檔案，可選擇特定車次(argv_select_trains)
@@ -98,7 +101,10 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                     if os.path.exists('JSON/' + filename):
                         shutil.move('JSON/' + filename, 'JSON_BACKUP/' + filename)
 
-                print("檔案轉換完成！\n")
+                end = time.time()
+
+                print("檔案轉換完成！轉換時間共" + str(round(end - start, 2)) + "秒\n")
+
     else:
         print('無法執行！原因為沒有讀取到 JSON 檔案。\n')
 

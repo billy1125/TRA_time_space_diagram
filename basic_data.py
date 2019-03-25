@@ -2,15 +2,15 @@ import csv
 
 #處理所有基本資訊(Category.csv)
 def category():
-    ''' with open('CSV/Category.csv', newline='', encoding='utf8') as csvfile:
-        
+    category = []
+    with open('CSV/Category.csv', newline='', encoding='utf8') as csvfile:
+
         reader = csv.reader(csvfile)
-        
+
         for row in reader:
-            if row[0] == self.line:
-                stations_to_draw.append(row)
-                if row[1] != 'NA':
-                    stations_loc[row[1]] = float(row[3]) '''
+            category.append(row)
+
+    return category
 
 #處理所有車站基本資訊(Stations.csv)
 def stations():

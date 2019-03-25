@@ -1,8 +1,10 @@
 # 台灣鐵路局公開資料JSON繪製鐵路運行圖(SVG格式)程式(TRA_time_space_diagram)
 
+|項目|內容|
+|---|---|
 |Author|呂卓勳 Cho-Hsun Lu|
-|---|---
-|E-mail|billy1125@gmail.com
+|E-mail|billy1125@gmail.com|
+|版本|1.0|
 
 ## 緣起
 
@@ -18,14 +20,12 @@
 
 ## 執行語言與所需相關套件
 
-目前本程式主要於 Python 3.7 開發，除此之外本程式需要以下套件，包括：
+目前本程式主要於 Python 3.7x 開發，除此之外本程式需要以下套件，包括：
 
-* [Pandas v0.23.4](https://github.com/pandas-dev/pandas) (用於列車推算通過車站時間)
-* [beautifulsoup4 v4.6.3](https://github.com/getanewsletter/BeautifulSoup4) (用於擷取台鐵 JSON)
+* [Pandas](https://github.com/pandas-dev/pandas)：用於列車推算通過車站時間，本程式開發使用版本為 0.24.2
+* [beautifulsoup4](https://github.com/getanewsletter/BeautifulSoup4)：用於擷取台鐵 JSON，本程式開發使用版本為 4.7.1
 
-進度條程式碼則採用 Vladimir Ignatev 所設計的[程式](https://gist.github.com/davincif/3e1cb5ef1c4007d4f5ca690d68db8e7b)。
-
-svg 繪圖感謝 [nedwu](https://github.com/nedwu)的啟發，並且參考其[專案部分程式碼](https://github.com/nedwu/TRAOpenDataDiagramer)。
+進度條程式碼則採用 Vladimir Ignatev 所設計的[程式](https://gist.github.com/davincif/3e1cb5ef1c4007d4f5ca690d68db8e7b)。svg 繪圖部分程式感謝 [nedwu](https://github.com/nedwu)的啟發，並且參考其[專案部分程式碼](https://github.com/nedwu/TRAOpenDataDiagramer)。
 
 > 以上套件為主要開發環境，若您採用非相同版本之 Python 與套件，執行上有任何錯誤歡迎交流。
 
@@ -59,7 +59,7 @@ $ python batch.py
 
 若按下`「ENTER」`，程式將直接就 JSON 檔案夾中所有以「JSON」附檔名之資料進行轉檔，直到所有 JSON 檔案轉換完成為止。
 
-> 請注意！JSON 檔案將刪除。
+> 請注意！已轉檔的 JSON 檔案將移動到 JSON_BACKUP 檔案夾。
 
 若按下`「Y」`，將繼續顯示以下問題：
 
@@ -72,15 +72,19 @@ $ python batch.py
 繪製運行圖的過程中，程式將顯示進度條與正在處理的車次。
 
 ```
+共有62個JSON檔案需要轉檔。
+
+目前進行日期20190316轉檔。
+
 [==========================================------------------] 70.7% ...目前正在轉換: 車次3105
 ```
 
-如果繪製完成，將顯示以下訊息，訊息包括需要轉換的車次數量、已轉換車次數量、無法轉換車次數量。
+如果繪製完成，將顯示以下訊息，訊息包括轉換所耗費的時間。
 
-> 附註：如果您輸入多車次資料，JSON 檔案中無此車次，則不會被計算在裡面。
+> 附註：轉換時間需視 CPU 效能，保守時間約 1 分鐘內可完成。
 
 ```
-檔案轉換完成！所有車次數量：884，已轉換車次數量：884，無法轉換車次數量：0
+檔案轉換完成！轉換時間共15.6秒
 ```
 
 如果您在置放 JSON 的檔案夾中沒有台鐵 JSON 檔案，則會顯示以下錯誤訊息。
