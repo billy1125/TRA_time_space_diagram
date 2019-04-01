@@ -3,9 +3,6 @@
 
 import csv
 import time
-import pandas as pd # 引用套件並縮寫為 pd
-import numpy as np
-from progessbar import progress
 
 dict_car_kind = {
     '1131': 'local',
@@ -77,200 +74,169 @@ with open('CSV/Category.csv', newline='', encoding='utf8') as csvfile:
 
 class TimeSpaceDiagram:
 
-    def __init__(self, lines_diagram_setting, all_trains, location, date, version):
+    def __init__(self, lines_diagram_setting, all_trains, location, date, diagram_hours, version):
 
         self.location = location
         self.date = date
-
+        self.offset = diagram_hours[0] * 600  # 將整個圖形往左移動的距離
         self.stations_to_draw = []
         self.stations_loc = {}
 
         self.diagrams = {}
 
-        count = 0
-        total = len(all_trains)
-
         for key, value in lines_diagram_setting.items():
-            self.diagrams[key] = DiagramObject(lines_stations_for_background[key], self.location + value[0], date, value[1], 18100, value[2], version)
+            self.diagrams[key] = self.DiagramObject(lines_stations_for_background[key],
+                                                    self.location + value[0],
+                                                    date,
+                                                    value[1],
+                                                    600 * (len(diagram_hours) - 1) + 100,
+                                                    value[2],
+                                                    diagram_hours,
+                                                    version)
 
         # 繪製各車次線
-        for train_id, car_class, line, over_night_stn, train_time_space in all_trains:
-
-            count += 1
-            progress(count, total, "目前製作車次：" + train_id)
-
-            self.draw_train(train_id, car_class, line, train_time_space, self.diagrams)
+        for line_kind, train_id, car_class, line_dir, over_night_stn, option_id, train_time_space in all_trains:
+            self.draw_train(line_kind, train_id, car_class, line_dir, option_id, train_time_space, self.diagrams)
 
         for key, value in self.diagrams.items():
             value.save_file()
 
     # 繪製車次線
-    def draw_train(self, train_id, car_class, line, train_time_space, diagrams):
+    def draw_train(self, line_kind, train_id, car_class, line_dir, option_id, train_time_space, diagrams):
 
         color = dict_car_kind.get(car_class, 'ordinary')
         dict_filtered_stations = {}
-        list_station_record = []
 
         for item in lines:
             dict_filtered_stations[item] = []
 
+        path = "M"
+
         for index, row in train_time_space.iterrows():
-            for key, value in lines_stations.items():
-                    if row['Station ID'] in value:
-                        list_station_record.append(row['Station ID'])
-                        temp = dict_filtered_stations[key]
-                        temp.append([row['Station ID'], row['Time'], value[row['Station ID']][0]])
-                        dict_filtered_stations[key] = temp
+            x = round(row['Time'] * 10 + 50 - self.offset, 4)
+            y = round(row['Loc'] + 50, 4)
+            path += str(x) + ',' + str(y) + ' '
 
-        for key, value in dict_filtered_stations.items():
+        diagrams[line_kind].draw_line(train_id, path, color, option_id)
 
-            # 處理山海線，如果只有通過彰化與竹南車站，則該路線不繪製
-            check_stations = False
-            if (key == "LINE_WSEA" or key == "LINE_WM") and len(value) <= 4:
-                for item in value:
-                    if item[0] != '1028' or item[0] != '1120':
-                        check_stations = True
+    class DiagramObject:
 
-            if len(value) > 2 and check_stations != True:
-                path = "M"
-                for station_id, time, loc in value:
-                    # if station_id == "-1":
-                    #     # 跨午夜前最後一段繪製
-                    #     x = round(14450, 4)
-                    #     y = round(midnight_loc + 50, 4)
-                    #     path += str(x) + ',' + str(y) + ' '
-                    #     break
-                    # else:
-                    x = round(time * 10 + 50, 4)
-                    y = round(loc + 50, 4)
-                    path += str(x) + ',' + str(y) + ' '
+        def __init__(self, stations_to_draw, location, date, line, width, height, diagram_hours, version):
 
-                diagrams[key].draw_line(train_id, path, color, '')
+            self.file_name = location + date + '.svg'
+            self.date = date
+            self.line = line
+            self.width = width
+            self.height = height
+            self.diagram_hours = diagram_hours
+            self.stations_to_draw = stations_to_draw
 
+            # svg檔案描述、背景、基本大小基本設定
+            self.fileHandler = open(self.file_name, 'w', encoding='utf-8')
+            self.fileHandler.write('<?xml version="1.0" encoding="utf-8" ?>')
+            self.fileHandler.write(
+                '<?xml-stylesheet href="style.css" type="text/css" title="sometext" alternate="no" media="screen"?>')
+            self.fileHandler.write(
+                '<svg baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xml'
+                'ns:xlink="http://www.w3.org/1999/xlink" style="font-family:Tahoma" width="' + str(self.width) + '" height="' + str(self.height + 100) + '" version="1.1"><defs />')
 
-class DiagramObject:
+            self._draw_background(version)
 
-    def __init__(self, stations_to_draw, location, date, line, width, height, version):
+        def _add_text(self, x, y, string, _color = None, _class = None, transform = None):
 
-        self.file_name = location + date + '.svg'
-        self.date = date
-        self.line = line
-        self.width = width
-        self.height = height
-        self.stations_to_draw = stations_to_draw
+            transformStr = ''
 
-        # svg檔案描述、背景、基本大小基本設定
-        self.fileHandler = open(self.file_name, 'w', encoding='utf-8')
-        self.fileHandler.write('<?xml version="1.0" encoding="utf-8" ?>')
-        self.fileHandler.write(
-            '<?xml-stylesheet href="style.css" type="text/css" title="sometext" alternate="no" media="screen"?>')
-        self.fileHandler.write(
-            '<svg baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xml'
-            'ns:xlink="http://www.w3.org/1999/xlink" style="font-family:Tahoma" width="' + str(self.width) + '" height="' + str(self.height + 100) + '" version="1.1"><defs />')
+            if transform is not None :
+                transformStr = ' transform="' + transform + '"'
+            if _class is not None :
+                self.fileHandler.write( '<text class="' + _class + '" x="' + x + '" y="' + y + '"' + transformStr + '>' + string + '</text>' )
+            elif _color is not None :
+                self.fileHandler.write( '<text fill="' + _color + '" x="' + x + '" y="' + y + '"' + transformStr + '>' + string + '</text>' )
+            else :
+                self.fileHandler.write( '<text x="' + x + '" y="' + y + '"' + transformStr + '>' + string + '</text>' )
 
-        self.draw_background(version)
+        def _add_line(self, x1, y1, x2, y2, _color = None, _class = None ) :
 
-    def add_text(self, x, y, string, _color = None, _class = None, transform = None):
+            if _class is not None :
+                self.fileHandler.write( '<line class="' + _class + '" x1="' + x1 + '" x2="' + x2 + '" y1="' + y1 + '" y2="' + y2 + '" />' )
+            elif _color is not None :
+                self.fileHandler.write( '<line stroke="' + _color + '" x1="' + x1 + '" x2="' + x2 + '" y1="' + y1 + '" y2="' + y2 + '" />' )
+            else :
+                self.fileHandler.write( '<line x1="' + x1 + '" x2="' + x2 + '" y1="' + y1 + '" y2="' + y2 + '" />' )
 
-        transformStr = ''
+        def _add_path( self, pathList, lineId, _color = None, _class = None, _emphasis = False ) :
 
-        if transform is not None :
-            transformStr = ' transform="' + transform + '"'
-        if _class is not None :
-            self.fileHandler.write( '<text class="' + _class + '" x="' + x + '" y="' + y + '"' + transformStr + '>' + string + '</text>' )
-        elif _color is not None :
-            self.fileHandler.write( '<text fill="' + _color + '" x="' + x + '" y="' + y + '"' + transformStr + '>' + string + '</text>' )
-        else :
-            self.fileHandler.write( '<text x="' + x + '" y="' + y + '"' + transformStr + '>' + string + '</text>' )
+            emphasisStr = '" style="stroke-width: 4" />' if _emphasis else '" />'
 
-    def add_line( self, x1, y1, x2, y2, _color = None, _class = None ) :
+            if _class is not None :
+                self.fileHandler.write( '<path class="' + _class + '" d="' + pathList + '" id="' + lineId + emphasisStr )
+            elif _color is not None :
+                self.fileHandler.write( '<path stroke="' + _color + '" d="' + pathList + '" id="' + lineId + emphasisStr )
+            else :
+                self.fileHandler.write( '<path d="' + pathList + '" id="' + lineId + emphasisStr )
 
-        if _class is not None :
-            self.fileHandler.write( '<line class="' + _class + '" x1="' + x1 + '" x2="' + x2 + '" y1="' + y1 + '" y2="' + y2 + '" />' )
-        elif _color is not None :
-            self.fileHandler.write( '<line stroke="' + _color + '" x1="' + x1 + '" x2="' + x2 + '" y1="' + y1 + '" y2="' + y2 + '" />' )
-        else :
-            self.fileHandler.write( '<line x1="' + x1 + '" x2="' + x2 + '" y1="' + y1 + '" y2="' + y2 + '" />' )
+        def _add_path_text(self, _line_id, _train_id, _class, _startOffset):
+            self.fileHandler.write( '<text><textPath class = "' + _class + '" startOffset = "' + _startOffset + '" xlink:href = "#' +
+                                    _line_id + '">' + _train_id + '</textPath></text>' )
 
-    def add_path( self, pathList, lineId, _color = None, _class = None, _emphasis = False ) :
+        # 繪製基底圖
+        def _draw_background(self, version):
+            localtime = time.asctime(time.localtime(time.time()))
 
-        emphasisStr = '" style="stroke-width: 4" />' if _emphasis else '" />'
+            self._add_text("5", "20", dict_line_kind[self.line] + ' 日期：' + self.date +'，運行圖均來自台鐵公開資料所分析，僅供參考，正確資料與實際運轉狀況請以台鐵網站或公告為主。台鐵JSON Open Data轉檔運行圖程式版本：' + version + ' 轉檔時間：' + localtime, "#000000", None, None)
 
-        if _class is not None :
-            self.fileHandler.write( '<path class="' + _class + '" d="' + pathList + '" id="' + lineId + emphasisStr )
-        elif _color is not None :
-            self.fileHandler.write( '<path stroke="' + _color + '" d="' + pathList + '" id="' + lineId + emphasisStr )
-        else :
-            self.fileHandler.write( '<path d="' + pathList + '" id="' + lineId + emphasisStr )
+            # 時間線
 
-    def add_path_text(self, _line_id, _train_id, _class, _startOffset):
-        self.fileHandler.write( '<text><textPath class = "' + _class + '" startOffset = "' + _startOffset + '" xlink:href = "#' +
-                                _train_id + '">' + _train_id + '</textPath></text>' )
+            # 小時
+            hours = self.diagram_hours
+            for i in range(0, len(hours)):
+                x = 50 + i * 600
+                self._add_line(str(x), "50", str(x), str(self.height + 50), None, "hour_line")
 
-    # 繪製基底圖
-    def draw_background(self, version):
-        localtime = time.asctime(time.localtime(time.time()))
+                for j in range(0, 11):
+                    self._add_text(str(x), str(49 + j * 300), '{:0>2d}'.format(hours[i]) + '00', "#999966")
 
-        self.add_text("5", "20", dict_line_kind[self.line] + ' 日期：' + self.date +'，運行圖均來自台鐵公開資料所分析，僅供參考，正確資料與實際運轉狀況請以台鐵網站或公告為主。台鐵JSON Open Data轉檔運行圖程式版本：' + version + ' 轉檔時間：' + localtime, "#000000", None, None)
+                # 每10分鐘
+                if i != len(hours) - 1:
+                    for j in range(0, 5):
+                        x = 50 + i * 600 + (j + 1) * 100
+                        if j != 2:
+                            self._add_line(str(x), "50", str(x), str(self.height + 50), None, "min10_line")
+                        else:  # 30分鐘顏色不同
+                            self._add_line(str(x), "50", str(x), str(self.height + 50), None, "min30_line")
+                            for k in range(0, 11):
+                                self._add_text(str(x), str(49 + k * 300), "30", "#999966", None, None)
 
-        # 時間線
-
-        # 小時
-        for i in range(0, 31):
-            x = 50 + i * 600
-            self.add_line(str(x), "50", str(x), str(self.height + 50), None, "hour_line")
-
-            if i > 24:
-                hour_text = i - 24
-            else:
-                hour_text = i
-
-            for j in range(0, 11):
-                self.add_text(str(x), str(49 + j * 300), '{:0>2d}'.format(hour_text) + '00', "#999966")
-
-            # 每10分鐘
-            if i != 30:
-                for j in range(0, 5):
-                    x = 50 + i * 600 + (j + 1) * 100
-                    if j != 2:
-                        self.add_line(str(x), "50", str(x), str(self.height + 50), None, "min10_line")
-                    else:  # 30分鐘顏色不同
-                        self.add_line(str(x), "50", str(x), str(self.height + 50), None, "min30_line")
-                        for k in range(0, 11):
-                            self.add_text(str(x), str(49 + k * 300), "30", "#999966", None, None)
-
-        # 車站線
-        for LineName, StationNumber, StationName, StationLoc in self.stations_to_draw:
-            y = float(StationLoc) + 50
-            if StationNumber != 'NA':
-                self.add_line("50", str(y), str(self.width - 50), str(y), None, "station_line")
-            else:
-                self.add_line("50", str(y), str(self.width - 50), str(y), None, "station_noserv_line")
-            for i in range(0, 31):
+            # 車站線
+            for LineName, StationNumber, StationName, StationLoc in self.stations_to_draw:
+                y = float(StationLoc) + 50
                 if StationNumber != 'NA':
-                    self.add_text(str(5 + i * 600), str(y - 5), StationName, "#000000", None, None)
+                    self._add_line("50", str(y), str(self.width - 50), str(y), None, "station_line")
                 else:
-                    self.add_text(str(5 + i * 600), str(y - 5), StationName, "#bfbfbf", None, None)
+                    self._add_line("50", str(y), str(self.width - 50), str(y), None, "station_noserv_line")
+                for i in range(0, 31):
+                    if StationNumber != 'NA':
+                        self._add_text(str(5 + i * 600), str(y - 5), StationName, "#000000", None, None)
+                    else:
+                        self._add_text(str(5 + i * 600), str(y - 5), StationName, "#bfbfbf", None, None)
 
-    # 繪製線條
-    def draw_line(self, train_id, path, color, midnight_id):
-        # print(path)
-        line_id = ''
-        # # 如果跨午夜車次，車次線ID修改，避免跨午夜車次線無車次號的問題
-        # if midnight_id == '':
-        #     line_id = train_id
-        # elif midnight_id != '':
-        #     line_id = midnight_id
+        # 繪製線條
+        def draw_line(self, train_id, path, color, option_id = None):
 
-        if path != 'M':  # 避免無資料
-            self.add_path(path, train_id, None, color, None)
-            for i in range(0, 6):
-                self.add_path_text(line_id, train_id, color, str(50 + 600 * i))
+            if option_id is None:
+                line_id = train_id
+            elif option_id is not None:
+                line_id = train_id + "_" + option_id
 
-    # 存檔
-    def save_file(self):
+            if path != 'M':  # 避免無資料
+                self._add_path(path, line_id, None, color, None)
+                for i in range(0, 6):
+                    self._add_path_text(line_id, train_id, color, str(50 + 600 * i))
 
-        self.fileHandler.write('</svg>')
-        self.fileHandler.close()
+        # 存檔
+        def save_file(self):
 
-        return dict_line_kind[self.line] + ' 日期：' + self.date + ' 運行圖繪製完成 \n'
+            self.fileHandler.write('</svg>')
+            self.fileHandler.close()
+
+            return dict_line_kind[self.line] + ' 日期：' + self.date + ' 運行圖繪製完成 \n'

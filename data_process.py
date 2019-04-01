@@ -1,11 +1,22 @@
-import pandas as pd # 引用套件並縮寫為 pd
+import pandas as pd  # 引用套件並縮寫為 pd
 import numpy as np
 
 # 自訂class與module
 import basic_data
 
+GlobalVariables = basic_data.GlobalVariables()
+
+# 處理所有車站基本資訊(Stations.csv)
+stations = GlobalVariables.Stations
+
+# 時間轉換(Locate.csv)
+time_loc = GlobalVariables.TimeLocation
+
 # 類別資料檔(Category.csv)
-category = basic_data.category()
+category = GlobalVariables.Category
+
+# 各營運路線車站於運行圖中的位置，用於運行線的繪製
+lines_stations = GlobalVariables.LinesStations
 
 # 山海線車站，去除竹南與彰化，用於檢查是否是成追線車次
 Station_SEA = []
@@ -19,30 +30,24 @@ for item in category:
         if item[1] not in ["1028", "1120"]:
             Station_MOUNTAIN.append(item[1])
 
-# 處理所有車站基本資訊(Stations.csv)
-stations = basic_data.stations()
-
-# 時間轉換(Locate.csv)
-time_loc = basic_data.time_loc()
-
 
 # 找出每一個車次的表定經過車站
 def find_train_stations(train_no):
-
     dict_start_end_station = {}
-    
+
     for TimeInfos in train_no['TimeInfos']:
         if TimeInfos['Station'] not in dict_start_end_station:
-            dict_start_end_station[TimeInfos['Station']] = [TimeInfos['ArrTime'], TimeInfos['DepTime'], TimeInfos['Station'], TimeInfos['Order']]
+            dict_start_end_station[TimeInfos['Station']] = [TimeInfos['ArrTime'], TimeInfos['DepTime'],
+                                                            TimeInfos['Station'], TimeInfos['Order']]
         elif TimeInfos['Station'] in dict_start_end_station:
-            dict_start_end_station['End'] = [TimeInfos['ArrTime'], TimeInfos['DepTime'], TimeInfos['Station'], TimeInfos['Order']]
+            dict_start_end_station['End'] = [TimeInfos['ArrTime'], TimeInfos['DepTime'], TimeInfos['Station'],
+                                             TimeInfos['Order']]
 
     return dict_start_end_station  # 字典 車站ID: [到站時間, 離站時間, 車站ID, 順序]
 
-    
+
 # 找出每一個車次所有會經過的車站，無論是否會停靠
 def find_passing_stations(dict_start_end_station, line, line_dir):
-
     # 起終點車站代碼
     end_station_number = len(dict_start_end_station) - 1
     start_station = list(dict_start_end_station)[0]
@@ -55,7 +60,7 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
         roundabout_train = True
 
     # 判斷是不是成追線
-    cheng_zhui = find_cheng_zhui(dict_start_end_station, start_station, end_station)
+    cheng_zhui = _find_cheng_zhui(dict_start_end_station, start_station, end_station)
 
     # 判斷是不是內灣六家線，目前均為區間車，並且具備六家、竹東二站
     neiwan = False
@@ -84,31 +89,31 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
     station = start_station
 
     km = 0.0  # 計算經過車站里程
-        
+
     while True:
 
         temp.append([stations[station][0], stations[station][1], stations[station][3], km])
 
-        if line_dir == '1': # 逆行
-            
+        if line_dir == '1':  # 逆行
+
             if cheng_zhui == False:
                 branch = stations[station][6]
                 if branch != '':
-                    if station == '1804': #平溪深澳線處理，瑞芳判斷
+                    if station == '1804':  # 平溪深澳線處理，瑞芳判斷
                         if end_station == '2003':
                             km += float(stations[station][12])
-                            station = '6103' # 指定到海科館站
+                            station = '6103'  # 指定到海科館站
                         elif end_station != '2003':
                             km += float(stations[station][10])
                             station = stations[station][4]
-                    elif station == '1207': # 集集線處理，二水判斷
+                    elif station == '1207':  # 集集線處理，二水判斷
                         if jiji == True:
                             km += float(stations[station][12])
                             station = '2702'
                         elif jiji == False:
                             km += float(stations[station][10])
                             station = stations[station][4]
-                    elif station == '1230': # 沙崙線處理，中洲判斷
+                    elif station == '1230':  # 沙崙線處理，中洲判斷
                         if shalun == True:
                             km += float(stations[station][12])
                             station = '5101'
@@ -117,70 +122,70 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
                             station = stations[station][4]
                     else:
                         # 山海線判斷
-                        if line in ['1', '0']: # 山線與其他
+                        if line in ['1', '0']:  # 山線與其他
                             km += float(stations[station][10])
                             station = stations[station][4]
-                        elif line == '2': # 海線
+                        elif line == '2':  # 海線
                             km += float(stations[station][12])
                             station = stations[station][6]
                 else:
                     km += float(stations[station][10])
                     station = stations[station][4]
-            else: # 成追線
-                km += float(stations[station][14]) 
-                station = stations[station][8] 
+            else:  # 成追線
+                km += float(stations[station][14])
+                station = stations[station][8]
 
-        elif line_dir == '0': # 順行
+        elif line_dir == '0':  # 順行
 
             if cheng_zhui == False:
                 branch = stations[station][7]
                 if branch != '':
-                    if station == '1002': # 八堵判斷
-                        if end_station != '1001': # 終點站非基隆的車次下一車站直接指定為暖暖
+                    if station == '1002':  # 八堵判斷
+                        if end_station != '1001':  # 終點站非基隆的車次下一車站直接指定為暖暖
                             km += float(stations[station][13])
                             station = stations[station][7]
-                        elif end_station == '1001': # 終點站為基隆的車次
+                        elif end_station == '1001':  # 終點站為基隆的車次
                             km += float(stations[station][11])
                             station = stations[station][5]
-                    elif station == '1826': # 蘇澳新判斷
-                        if end_station == '1827': # 終點站為蘇澳
+                    elif station == '1826':  # 蘇澳新判斷
+                        if end_station == '1827':  # 終點站為蘇澳
                             km += float(stations[station][13])
                             station = '1827'
-                        elif end_station != '1827': # 終點站非蘇澳的車次下一車站直接指定為永樂
-                            km += float(stations[station][11])                    
+                        elif end_station != '1827':  # 終點站非蘇澳的車次下一車站直接指定為永樂
+                            km += float(stations[station][11])
                             station = '1703'
-                    elif station in ['1024', '2203']: #內灣六家線處理，北新竹與竹中判斷
-                        if neiwan == True: # 終點站為六家或內灣
+                    elif station in ['1024', '2203']:  # 內灣六家線處理，北新竹與竹中判斷
+                        if neiwan == True:  # 終點站為六家或內灣
                             km += float(stations[station][13])
                             if station == '1024':
                                 station = '2212'
                             elif station == '2203':
-                                if end_station in ['2210', '2205']: # 若終點站為竹東或內灣，下一站指定為上員(偷懶的方式)
+                                if end_station in ['2210', '2205']:  # 若終點站為竹東或內灣，下一站指定為上員(偷懶的方式)
                                     station = '2204'
                                 elif end_station == '2214':
                                     station = '2214'
-                        elif neiwan == False: # 終點站非六家或內灣的車次下一車站直接指定為竹北
-                            km += float(stations[station][11])                    
+                        elif neiwan == False:  # 終點站非六家或內灣的車次下一車站直接指定為竹北
+                            km += float(stations[station][11])
                             station = '1023'
-                    elif station == '1806': # 平溪深澳線處理，三貂嶺判斷
+                    elif station == '1806':  # 平溪深澳線處理，三貂嶺判斷
                         if pingxi == True:
                             km += float(stations[station][13])
                             station = '1903'
-                        elif pingxi == False: # 終點站非平溪深澳線的車次下一車站直接指定為牡丹
+                        elif pingxi == False:  # 終點站非平溪深澳線的車次下一車站直接指定為牡丹
                             km += float(stations[station][11])
                             station = '1807'
-                    else: # 山海線判斷
-                        if line in ['1', '0']: # 山線或其他
+                    else:  # 山海線判斷
+                        if line in ['1', '0']:  # 山線或其他
                             km += float(stations[station][11])
                             station = stations[station][5]
-                        elif line == '2': # 海線
+                        elif line == '2':  # 海線
                             km += float(stations[station][13])
                             station = stations[station][7]
                 else:
-                    #if station != '2214':
+                    # if station != '2214':
                     km += float(stations[station][11])
                     station = stations[station][5]
-            else: # 成追線
+            else:  # 成追線
                 km += float(stations[station][15])
                 station = stations[station][9]
 
@@ -198,25 +203,24 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
 
     list_passing_stations = temp
 
-    return list_passing_stations  # 清單: [車站ID, 車站名稱, 里程數, 與下一站相差公里數]
+    return list_passing_stations  # 清單: [車站ID, 車站名稱, 里程位置, 與下一站相差公里數]
 
 
 # 判斷成追線車次
-def find_cheng_zhui(list_start_end_station, start_station, end_station):
-
+def _find_cheng_zhui(list_start_end_station, start_station, end_station):
     result = False
 
     if list_start_end_station.__contains__('1118') and list_start_end_station.__contains__('1321'):  # 區間車，具備成功、追分二站
         result = True
     elif (start_station in Station_SEA and end_station in Station_MOUNTAIN) or (
-                    start_station in Station_MOUNTAIN and end_station in Station_SEA):  # 區間快，起訖車站為山海線兩端車站
+            start_station in Station_MOUNTAIN and end_station in Station_SEA):  # 區間快，起訖車站為山海線兩端車站
         result = True
 
     return result
 
-# 推算所有通過車站的時間
-def estimate_time_space(dict_start_end_station, list_passing_stations, line_dir):
 
+# 推算所有通過車站的時間
+def estimate_time_space(dict_start_end_station, list_passing_stations):
     global time_loc
 
     station = []
@@ -226,7 +230,13 @@ def estimate_time_space(dict_start_end_station, list_passing_stations, line_dir)
 
     is_roundabout_train = False
 
-    return_list_df = []
+    _after_midnight_train = {}
+    _dict_lines_operation = {}
+
+    for key, value in lines_stations.items():
+        _dict_lines_operation[key] = [[], [], [], []]
+
+    _dict_roundabout = {}
 
     # 判斷是不是環島車次
     if list_passing_stations[len(list_passing_stations) - 1][0] == "End":
@@ -256,16 +266,14 @@ def estimate_time_space(dict_start_end_station, list_passing_stations, line_dir)
             loc.append(float(KM))
             time.append(np.NaN)
 
-    dict_temp = {"Station": station, "Time": time, "Loc": loc, "Station ID": station_id}
+    dict_temp = {"Station": station, "Time": time, "Loc": loc, "StationID": station_id}
 
     select_df = pd.DataFrame(dict_temp)
 
-    # if over_night_stn != "0":
-
+    # 將超過午夜的時間一律加上 1440，並且依據車站位置估計通過時間
     last_time_value = -1
     add_midnight = False
 
-    # 將超過午夜的時間一律加上 1440
     for index, row in select_df.iterrows():
 
         if np.isnan(row['Time']) == False:
@@ -278,26 +286,83 @@ def estimate_time_space(dict_start_end_station, list_passing_stations, line_dir)
 
             last_time_value = row['Time']
 
-    select_df = select_df.set_index('Loc').interpolate(method='index')  # 依據車站位置估計通過時間
-
+    select_df = select_df.set_index('Loc').interpolate(method='index')
     select_df = select_df.reset_index()
 
-    # 環島車次處理，基本邏輯：將整個路線拆成三段，以八堵與竹南車站作為三段分界點
+    # _將通過的估計時間弄進暫存的各營運路線表格
+    for index, row in select_df.iterrows():
+        for key, value in lines_stations.items():
+            if row['StationID'] in value:
+                _dict_lines_operation[key][0].append(row['Station'])
+                _dict_lines_operation[key][1].append(row['StationID'])
+                _dict_lines_operation[key][2].append(row['Time'])
+                _dict_lines_operation[key][3].append(float(value[row['StationID']][0]))
+
+    for key, value in _dict_lines_operation.items():
+        dict_temp = {"Station": value[0], "StationID": value[1], "Time": value[2], "Loc": value[3]}
+        select_df = pd.DataFrame(dict_temp)
+        _dict_lines_operation[key] = select_df
+
+    # 資料刪減，將未通過山海線（竹南、彰化二車站順序為相連）與資料不足之營運路線資料刪除
+    drop_key = []
+    for key, value in _dict_lines_operation.items():
+        df_temp = value.copy()
+        index_temp = df_temp[
+            (df_temp['StationID'] == '1120') | (df_temp['StationID'] == '1028')].index.tolist()
+
+        if len(value) < 3:
+            drop_key.append(key)
+        else:
+            if index_temp == [0, 1, 2] or index_temp == [0, 1, 2, 3]:
+                drop_key.append(key)
+
+    for item in drop_key:
+        _dict_lines_operation.pop(item)
+
+    # 跨午夜車次擷取午夜後的運行資料
+    for key, value in _dict_lines_operation.items():
+        index_label = value.query('Time >= 1440').index.tolist()
+        if len(index_label) >= 2:
+            row_value = ['跨午夜', "-1", 1440, np.NaN]
+            select_df = _insert_row(index_label[0], value, row_value)  # 插入一個虛擬的跨午夜車站
+
+            select_df = select_df.set_index('Time').interpolate(method='index')  # 依據時間估計跨午夜的位置
+            select_df = select_df.reset_index()
+
+            df_after_midnight_train = select_df[index_label[0]:].copy()
+            for index, row in df_after_midnight_train.iterrows():
+                # if row['Time'] >= 1440:
+                df_after_midnight_train.loc[index, 'Time'] = row['Time'] - 1440
+
+            _after_midnight_train[key] = df_after_midnight_train
+
+    # 環島車次處理，基本邏輯：如果該車次車站順序竹南與八堵車站為相鄰，需要拆開來為兩段
     if is_roundabout_train == True:
-        station_1002_loc = select_df[select_df["Station ID"].isin(["1002"])].iloc[0, 2]
-        station_1028_loc = select_df[select_df["Station ID"].isin(["1028"])].iloc[0, 2]
 
-        if line_dir == "0":
-            return_list_df.append(select_df[select_df["Time"] <= station_1002_loc])
-            return_list_df.append(select_df[(select_df["Time"] >= station_1002_loc) & (select_df["Time"] <= station_1028_loc)])
-            return_list_df.append(select_df[select_df["Time"] >= station_1028_loc])
-        elif line_dir == "1":
-            return_list_df.append(select_df[select_df["Time"] <= station_1028_loc])
-            return_list_df.append(
-                select_df[(select_df["Time"] >= station_1028_loc) & (select_df["Time"] <= station_1002_loc)])
-            return_list_df.append(select_df[select_df["Time"] >= station_1002_loc])
+        df_line_wn = _dict_lines_operation["LINE_WN"]
+        _dict_lines_operation.pop("LINE_WN")
 
-    elif is_roundabout_train == False:
-        return_list_df.append(select_df)
+        indexes_of_1002and1028 = df_line_wn[
+            (df_line_wn['StationID'] == '1002') | (df_line_wn['StationID'] == '1028')].index.tolist()
 
-    return return_list_df
+        if abs(indexes_of_1002and1028[0] - indexes_of_1002and1028[1]) == 1:
+            df1 = df_line_wn[0:indexes_of_1002and1028[1]].copy()
+            df2 = df_line_wn[indexes_of_1002and1028[1]:]
+
+            _dict_roundabout["LINE_WN_01"] = df1
+            _dict_roundabout["LINE_WN_02"] = df2
+
+    return _dict_lines_operation, _after_midnight_train, _dict_roundabout  # 本日車次運行資料, 跨午夜車次午夜後的運行資料, 環島車次在西部幹線北段的運行資料
+
+
+# 在 dataframe 插入一列，參考自：https://www.geeksforgeeks.org/insert-row-at-given-position-in-pandas-dataframe/
+def _insert_row(row_number, df, row_value):
+    df1 = df[0:row_number].copy()
+    df2 = df[row_number:]
+
+    df1.loc[row_number] = row_value
+    df_result = pd.concat([df1, df2])
+
+    df_result.index = [*range(df_result.shape[0])]
+
+    return df_result
