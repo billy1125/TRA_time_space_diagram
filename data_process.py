@@ -303,16 +303,28 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
         select_df = pd.DataFrame(dict_temp)
         _dict_lines_operation[key] = select_df
 
-    # 資料刪減，將未通過山海線（竹南、彰化二車站順序為相連）與資料不足之營運路線資料刪除
+    # 資料刪減整理
     drop_key = []
     for key, value in _dict_lines_operation.items():
-        df_temp = value.copy()
-        index_temp = df_temp[
-            (df_temp['StationID'] == '1120') | (df_temp['StationID'] == '1028')].index.tolist()
-
-        if len(value) < 3:
+        if len(value) < 3: # 資料不足者直接刪除
             drop_key.append(key)
-        else:
+
+        elif key == "LINE_WM" or key == "LINE_WSEA": # 部分成追線車次出現追分或成功直達竹南的現象，將竹南車站資料刪除
+            for item in ['1321', '1118']:
+                indexes = value[(value.StationID == item) | (value.StationID == '1028')].index.tolist()
+                if len(indexes) > 2:
+                    indexes.sort()
+                    last_index = indexes[len(indexes) - 1]
+                    test_index = list(range(indexes[0], indexes[0] + len(indexes)))
+
+                    if test_index[len(test_index) - 1] == last_index:
+                        index_1028 = value[value.StationID == '1028'].index.tolist()
+                        df = value.copy()
+                        df.drop(df.index[index_1028], inplace=True)
+                        _dict_lines_operation[key] = df
+
+            # 將未通過山海線（竹南、彰化二車站順序為相連）資料刪除
+            index_temp = value[(value.StationID == '1120') | (value.StationID == '1028')].index.tolist()
             if index_temp == [0, 1, 2] or index_temp == [0, 1, 2, 3]:
                 drop_key.append(key)
 
@@ -331,7 +343,6 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
 
             df_after_midnight_train = select_df[index_label[0]:].copy()
             for index, row in df_after_midnight_train.iterrows():
-                # if row['Time'] >= 1440:
                 df_after_midnight_train.loc[index, 'Time'] = row['Time'] - 1440
 
             _after_midnight_train[key] = df_after_midnight_train
@@ -343,7 +354,7 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
         _dict_lines_operation.pop("LINE_WN")
 
         indexes_of_1002and1028 = df_line_wn[
-            (df_line_wn['StationID'] == '1002') | (df_line_wn['StationID'] == '1028')].index.tolist()
+            (df_line_wn.StationID == '1002') | (df_line_wn.StationID == '1028')].index.tolist()
 
         if abs(indexes_of_1002and1028[0] - indexes_of_1002and1028[1]) == 1:
             df1 = df_line_wn[0:indexes_of_1002and1028[1]].copy()
