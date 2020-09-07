@@ -4,7 +4,12 @@
 |---|---|
 |Author|呂卓勳 Cho-Hsun Lu|
 |E-mail|billy1125@gmail.com|
-|版本|1.01|
+|版本|1.02|
+
+## 致謝
+
+* nedwu(https://github.com/nedwu)的程式碼。
+* 黃祈恩(https://www.facebook.com/profile.php?id=100051647619113&sk=about)幫忙將台鐵車站代碼基本資料的CSV檔案更正
 
 ## 緣起
 
@@ -47,7 +52,7 @@ $ python batch.py
 
 ```
 ************************************
-台鐵JSON轉檔運行圖程式 - 版本：1.01
+台鐵JSON轉檔運行圖程式 - 版本：1.02
 ************************************
 ```
 
