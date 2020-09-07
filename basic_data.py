@@ -37,7 +37,7 @@ class GlobalVariables:
 
             for row in reader:
                 # print(row[0])
-                self.TimeLocation[row[0]] = row[1]
+                self.TimeLocation[row[0]] = row[2]
 
         # 處理所有車站基本資訊(Category.csv)
         with open('CSV/Category.csv', newline='', encoding='utf8') as csvfile:

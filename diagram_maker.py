@@ -8,9 +8,10 @@ dict_car_kind = {
     '1131': 'local',
     '1132': 'local',
     '1100': 'tze_chiang_diesel',
-    '1101': 'tze_chiang',
+    '1101': 'taroko',
     '1102': 'taroko',
     '1103': 'tze_chiang_diesel',
+    '1105': 'tze_chiang',
     '1107': 'puyuma',
     '1108': 'tze_chiang',
     '1109': 'tze_chiang',
@@ -22,6 +23,7 @@ dict_car_kind = {
     '110F': 'tze_chiang_diesel',
     '1110': 'chu_kuang',
     '1111': 'chu_kuang',
+    '1112': 'chu_kuang',
     '1114': 'chu_kuang',
     '1115': 'chu_kuang',
     '1120': 'fu_hsing',
@@ -89,7 +91,7 @@ class TimeSpaceDiagram:
                                                     self.location + value[0],
                                                     date,
                                                     value[1],
-                                                    600 * (len(diagram_hours) - 1) + 100,
+                                                    1200 * (len(diagram_hours) - 1) + 100,
                                                     value[2],
                                                     diagram_hours,
                                                     version)
@@ -177,7 +179,7 @@ class TimeSpaceDiagram:
 
         def _add_path_text(self, _line_id, _train_id, _class, _startOffset):
             self.fileHandler.write( '<text><textPath class = "' + _class + '" startOffset = "' + _startOffset + '" xlink:href = "#' +
-                                    _line_id + '">' + _train_id + '</textPath></text>' )
+                                    _line_id + '"><tspan dy="-3" font-size="80%">' + _train_id + '</tspan></textPath></text>' )
 
         # 繪製基底圖
         def _draw_background(self, version):
@@ -186,26 +188,35 @@ class TimeSpaceDiagram:
             self._add_text("5", "20", dict_line_kind[self.line] + ' 日期：' + self.date +'，運行圖均來自台鐵公開資料所分析，僅供參考，正確資料與實際運轉狀況請以台鐵網站或公告為主。台鐵JSON Open Data轉檔運行圖程式版本：' + version + ' 轉檔時間：' + localtime, "#000000", None, None)
 
             # 時間線
-
-            # 小時
             hours = self.diagram_hours
+            text_spacing_factor = 500
+            if self.height <= 1500:  # 較小的運行圖高度，小時顯示的間距設定較窄
+                text_location_factor = 250
+            # 小時
             for i in range(0, len(hours)):
-                x = 50 + i * 600
+                x = 50 + i * 1200
                 self._add_line(str(x), "50", str(x), str(self.height + 50), None, "hour_line")
 
-                for j in range(0, 11):
-                    self._add_text(str(x), str(49 + j * 300), '{:0>2d}'.format(hours[i]) + '00', "#999966")
+                for j in range(0, 21):
+                    y = j * text_spacing_factor
+                    if y <= self.height:
+                        self._add_text(str(x), str(49 + y), '{:0>2d}'.format(hours[i]) + '00', "#2e2e1f")
 
-                # 每10分鐘
-                if i != len(hours) - 1:
+                if i != len(hours) - 1:  # 每10分鐘
                     for j in range(0, 5):
-                        x = 50 + i * 600 + (j + 1) * 100
+                        x = 50 + i * 1200 + (j + 1) * 200
                         if j != 2:
                             self._add_line(str(x), "50", str(x), str(self.height + 50), None, "min10_line")
                         else:  # 30分鐘顏色不同
                             self._add_line(str(x), "50", str(x), str(self.height + 50), None, "min30_line")
-                            for k in range(0, 11):
-                                self._add_text(str(x), str(49 + k * 300), "30", "#999966", None, None)
+
+                        for k in range(0, 21):
+                            y = k * text_spacing_factor
+                            if y <= self.height:
+                                if j != 2:
+                                    self._add_text(str(x), str(49 + y), str(j + 1) + "0", "#adad85", None, None)
+                                else:
+                                    self._add_text(str(x), str(49 + y), str(j + 1) + "0", "#5c5c3d", None, None)
 
             # 車站線
             for LineName, StationNumber, StationName, StationLoc in self.stations_to_draw:
@@ -216,9 +227,9 @@ class TimeSpaceDiagram:
                     self._add_line("50", str(y), str(self.width - 50), str(y), None, "station_noserv_line")
                 for i in range(0, 31):
                     if StationNumber != 'NA':
-                        self._add_text(str(5 + i * 600), str(y - 5), StationName, "#000000", None, None)
+                        self._add_text(str(5 + i * 1200), str(y - 5), StationName, "#000000", None, None)
                     else:
-                        self._add_text(str(5 + i * 600), str(y - 5), StationName, "#bfbfbf", None, None)
+                        self._add_text(str(5 + i * 1200), str(y - 5), StationName, "#c2c2a3", None, None)
 
         # 繪製線條
         def draw_line(self, train_id, path, color, option_id = None):
@@ -232,6 +243,8 @@ class TimeSpaceDiagram:
                 self._add_path(path, line_id, None, color, None)
                 for i in range(0, 6):
                     self._add_path_text(line_id, train_id, color, str(50 + 600 * i))
+                # for i in range(0, 5):
+                #     self._add_path_text(line_id, train_id, color, str(20 * i) + "%")
 
         # 存檔
         def save_file(self):

@@ -12,8 +12,8 @@ import diagram_maker as dm
 from progessbar import progress
 
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-version = '1.01'
+# sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+version = '1.02'
 
 lines_diagram_setting = {'LINE_WN': ['/west_link_north/WESTNORTH_', 'LINE_WN', 3000],
                          'LINE_WM': ['/west_link_moutain/WESTMOUNTAIN_', 'LINE_WM', 2000],
@@ -116,7 +116,7 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                     all_trains_data.append(["LINE_WN", train_id, car_class, line, over_night_stn, key + train_id, value])
 
             # 繪製運行圖
-            dm.TimeSpaceDiagram(lines_diagram_setting_test,
+            dm.TimeSpaceDiagram(lines_diagram_setting,
                                 all_trains_data,
                                 argv_website_svg_location,
                                 file_date.split('.')[0],
