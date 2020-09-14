@@ -8,8 +8,8 @@
 
 ## 致謝
 
-* nedwu(https://github.com/nedwu)的程式碼。
-* 黃祈恩(https://www.facebook.com/profile.php?id=100051647619113&sk=about)幫忙將台鐵車站代碼基本資料的CSV檔案更正
+* nedwu(https://github.com/nedwu) 的程式碼。
+* 黃祈恩(https://www.facebook.com/profile.php?id=100051647619113&sk=about) 幫忙將台鐵車站代碼基本資料的CSV檔案更正
 
 ## 緣起
 

@@ -12,6 +12,7 @@ dict_car_kind = {
     '1102': 'taroko',
     '1103': 'tze_chiang_diesel',
     '1105': 'tze_chiang',
+    '1106': 'tze_chiang',
     '1107': 'puyuma',
     '1108': 'tze_chiang',
     '1109': 'tze_chiang',
