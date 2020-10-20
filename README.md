@@ -9,7 +9,10 @@
 ## 致謝
 
 * nedwu(https://github.com/nedwu) 的程式碼。
-* 黃祈恩(https://www.facebook.com/profile.php?id=100051647619113&sk=about) 幫忙將台鐵車站代碼基本資料的CSV檔案更正
+* 黃祈恩(https://www.facebook.com/profile.php?id=100051647619113&sk=about) 幫忙將台鐵車站代碼基本資料的 CSV 檔案更正
+* 施佩佶(https://www.facebook.com/profile.php?id=100009938435817) 於 2020.10.16 通報 6655、6657 車次錯誤問題
+
+感謝以上網友對於本程式的建議與錯誤回報，您的協助能讓本程式更臻完整，感謝！
 
 ## 緣起
 

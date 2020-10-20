@@ -69,9 +69,9 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
     if dict_start_end_station.__contains__('7332'):
         pingxi = True
 
-    # 判斷是不是集集線，目前均為區間車，並且具備濁水站，濁水車站必經過
+    # 判斷是不是集集線，目前均為區間車，並且具備濁水站或源泉，濁水車站必經過
     jiji = False
-    if dict_start_end_station.__contains__('3432'):
+    if dict_start_end_station.__contains__('3432') or dict_start_end_station.__contains__('3431'):
         jiji = True
 
     # 判斷是不是沙崙線，目前均為區間車，並且具備沙崙站，沙崙車站必經過
