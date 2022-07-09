@@ -39,7 +39,7 @@
 
 ## 使用方法
 
-請將所有程式解壓縮到同一檔案夾，包括 CSV、JSON、OUTPUT 等檔案夾均需於同一檔案夾，再將所需要轉檔的台鐵 JSON 檔案，置放於 JSON 檔案夾之中，台鐵 JSON 檔案可至[台鐵公開資料網站](http://163.29.3.98/json/)中下載。
+請將所有程式解壓縮到同一檔案夾，包括 CSV、JSON、OUTPUT 等檔案夾均需於同一檔案夾，再將所需要轉檔的台鐵 JSON 檔案，置放於 JSON 檔案夾之中，台鐵 JSON 檔案可至[台鐵公開資料網站](https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list)中下載。
 
 程式以作業系統的命令行 (command-line) 模式執行，執行方式包括一般模式與參數模式，分述如下：
 
@@ -126,6 +126,7 @@ $ python batch.py /Users/username/Desktop/JSON /Users/username/Desktop/OUTPUT AL
 執行後，程式將自動將所有置放於您指定的 JSON 檔案夾中的台鐵 JSON 進行轉檔，並且依照不同台鐵營運路線，置放於您指定的 OUTPUT 檔案夾之中。
 
 ## 擷取台鐵 JSON 程式
+**目前暫時無法運行**
 
 若您需要批次下載當日之台鐵所有 JSON 程式，請以命令行模式，執行 JSON 檔案夾中之 download_json.py 程式，執行語法為：
 
@@ -133,7 +134,7 @@ $ python batch.py /Users/username/Desktop/JSON /Users/username/Desktop/OUTPUT AL
 $ python download_json.py
 ```
 
-該程式將直接下載[台鐵公開資料網站](http://163.29.3.98/json/)網站中所有 JSON 檔案，並且置放於 JSON 檔案夾中。
+該程式將直接下載[台鐵公開資料網站](https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list)網站中所有 JSON 檔案，並且置放於 JSON 檔案夾中。
 
 > 附註：台鐵每日均提供當日至 45 天內每日之時刻表資料，以 JSON 格式提供。
 
@@ -141,4 +142,14 @@ $ python download_json.py
 
 本程式所轉換之運行圖，檔案副檔名為 **.svg**，請使用瀏覽器直接開啟檔案，請注意，請將 OUTPUT 檔案夾中的 **stlye.css** 檔案與運行圖置放於同一檔案夾中，再以瀏覽器開啟， **stlye.css** 檔案為設定運行圖樣式之 CSS 檔案。
 
-目前為止，本程式所轉換之運行圖於 Google Chrome、Mozilla Firefox、Opera、Apple Safari 均能正常顯示，至於其他瀏覽器尚未實地測試，若有問題也歡迎回報。
+目前為止，本程式所轉換之運行圖於 Google Chrome、Mozilla Firefox、Opera、Apple Safari、Vivaldi均能正常顯示，至於其他瀏覽器尚未實地測試，若有問題也歡迎回報。
+
+## 快速執行方法
+
+使用類Unix的使用者，可以使用`run.sh`進行快速執行。
+
+> 備註：請記得將`run.sh`的執行權限開啟：
+```bash
+$ chmod a+x run.sh
+```
+
