@@ -26,7 +26,7 @@ def read_url(url):
 
 def download_tra_json(url_json):
 
-##    strUrl = 'http://163.29.3.98/json/'
+##    strUrl = 'https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/'
 ##    strFileExtent = '.zip'
 ##    strdate = str_date
 ##
@@ -67,7 +67,7 @@ def download_tra_json(url_json):
     except:
         strLog += "Unexpected error:", sys.exc_info()[0] + '\n'
 
-items = read_url("http://163.29.3.98/json/")
+items = read_url("https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON")
 last_file_number = len(items) - 2
 download_tra_json(items[last_file_number])
 download_tra_json(items[1])
