@@ -110,5 +110,3 @@ JSON/2*.json
 *.svg
 log.txt
 .DS_Store
-run.sh
-play.bat
