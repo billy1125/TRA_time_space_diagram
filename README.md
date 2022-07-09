@@ -48,7 +48,7 @@
 命令行執行語法
 
 ```
-$ python batch.py
+$ python3 batch.py
 ```
 
 之後會顯示本程式的標題，並且顯示版本。
@@ -114,13 +114,13 @@ $ python batch.py
 若您不改動 JSON 與 OUTPUT 檔案夾位置，並且指定要轉換第 3671 車次普快車，可以這樣輸入：
 
 ```
-$ python batch.py JSON OUTPUT 3671
+$ python3 batch.py JSON OUTPUT 3671
 ```
 
 若您改動 JSON 與 OUTPUT 檔案夾位置，分別為 **/Users/username/Desktop/JSON** 與 **/Users/username/Desktop/OUTPUT**，並且指定要轉換所有車次，可以這樣輸入：
 
 ```
-$ python batch.py /Users/username/Desktop/JSON /Users/username/Desktop/OUTPUT ALL
+$ python3 batch.py /Users/username/Desktop/JSON /Users/username/Desktop/OUTPUT ALL
 ```
 
 執行後，程式將自動將所有置放於您指定的 JSON 檔案夾中的台鐵 JSON 進行轉檔，並且依照不同台鐵營運路線，置放於您指定的 OUTPUT 檔案夾之中。
@@ -131,7 +131,7 @@ $ python batch.py /Users/username/Desktop/JSON /Users/username/Desktop/OUTPUT AL
 若您需要批次下載當日之台鐵所有 JSON 程式，請以命令行模式，執行 JSON 檔案夾中之 download_json.py 程式，執行語法為：
 
 ```
-$ python download_json.py
+$ python3 download_json.py
 ```
 
 該程式將直接下載[台鐵公開資料網站](https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list)網站中所有 JSON 檔案，並且置放於 JSON 檔案夾中。
