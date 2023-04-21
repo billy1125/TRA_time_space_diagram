@@ -1,19 +1,11 @@
-# 台灣鐵路局公開資料JSON繪製鐵路運行圖(SVG格式)程式(TRA_time_space_diagram)
+# 台灣鐵路局公開資料JSON鐵路運行圖繪製程式
 
 |項目|內容|
 |---|---|
+|專案名稱|TRA_time_space_diagram|
 |Author|呂卓勳 Cho-Hsun Lu|
 |E-mail|billy1125@gmail.com|
-|版本|1.03|
-
-## 致謝
-
-* nedwu(https://github.com/nedwu) 的程式碼
-* 黃祈恩(https://www.facebook.com/profile.php?id=100051647619113&sk=about) 幫忙將台鐵車站代碼基本資料的 CSV 檔案更正
-* 施佩佶(https://www.facebook.com/profile.php?id=100009938435817) 於 2020.10.16 通報 6655、6657 車次錯誤問題
-* 張柏皓(https://www.facebook.com/profile.php?id=100066832751160) 於 2023.04.19 通報 6105、6702 車次錯誤問題
-
-感謝以上網友對於本程式的建議與錯誤回報，您的協助能讓本程式更臻完整，感謝！
+|版本|1.3.1|
 
 ## 緣起
 
@@ -21,13 +13,13 @@
 
 ## 限制
 
-本程式鐵路運行圖均來自於台鐵 open data 進行分析整理與繪製。然而**公開資料不等於實際台鐵的運行計畫**，僅是旅客所需的列車到站與離站時間資料，列車的待避或會車狀況無法在運行圖中展示，因此會出現運行圖與實際運行有所差異的現象。因此實際鐵路運行情況，請以台鐵所公布資訊為準。
+本程式鐵路運行圖均來自於台鐵 open data 進行分析整理與繪製。然而**公開資料不等於實際台鐵的運行計畫**，僅是旅客所需的列車到站與離站時間資料，列車的待避或會車狀況無法在運行圖中展示，貨運、迴送等非客運車次也因台鐵並未在公開資料集提供。因此會出現運行圖與實際運行有所差異，以及無法提供非客運車次的運行線。因此實際鐵路運行情況，請以台鐵所公布資訊或鐵路運行實況為準。
 
 ## 程式功能
 
 本程式用於將台鐵公開之時刻表 JSON 格式檔案 (以下稱台鐵 JSON)，轉換為鐵路運行圖，運行圖格式為可縮放向量圖形（Scalable Vector Graphics, SVG）。並且提供一個批次下載台鐵 JSON 之簡易程式。
 
-## 執行語言與所需相關套件
+## Python 版本與所需相關程式開發套件
 
 目前本程式主要於 Python 3.9x 開發，除此之外本程式需要以下套件，包括：
 
@@ -56,7 +48,7 @@ $ python batch.py
 
 ```
 ************************************
-台鐵JSON轉檔運行圖程式 - 版本：1.03
+台鐵JSON轉檔運行圖程式 - 版本：1.3.1
 ************************************
 ```
 
@@ -134,12 +126,19 @@ $ python batch.py /Users/username/Desktop/JSON /Users/username/Desktop/OUTPUT AL
 $ python download_json.py
 ```
 
-該程式將直接下載[台鐵公開資料網站](http://163.29.3.98/json/)網站中所有 JSON 檔案，並且置放於 JSON 檔案夾中。
+該程式將直接下載[台鐵公開資料網站](http://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list)網站中所有 JSON 檔案，並且置放於 JSON 檔案夾中。
 
-> 附註：台鐵每日均提供當日至 45 天內每日之時刻表資料，以 JSON 格式提供。
+> 附註：台鐵每日均提供當日至 60 天內每日之時刻表資料，以 JSON 格式提供。如果想要看相關資料定義的說明，可至[政府資料開放平台](https://data.gov.tw/dataset/6138)參考。
 
 ## 閱讀運行圖之方法
 
-本程式所轉換之運行圖，檔案副檔名為 **.svg**，請使用瀏覽器直接開啟檔案，請注意，請將 OUTPUT 檔案夾中的 **stlye.css** 檔案與運行圖置放於同一檔案夾中，再以瀏覽器開啟， **stlye.css** 檔案為設定運行圖樣式之 CSS 檔案。
+本程式所轉換之運行圖，檔案副檔名為 **.svg**，請使用瀏覽器直接開啟檔案，請注意，請將 OUTPUT 檔案夾中的 **stlye.css** 樣式檔案與運行圖置放於同一檔案夾中，再以瀏覽器開啟運行圖。目前為止，本程式所轉換之運行圖於 Google Chrome、Mozilla Firefox、Opera、Apple Safari 均能正常顯示，至於其他瀏覽器尚未實地測試，若有問題也歡迎回報。
 
-目前為止，本程式所轉換之運行圖於 Google Chrome、Mozilla Firefox、Opera、Apple Safari 均能正常顯示，至於其他瀏覽器尚未實地測試，若有問題也歡迎回報。
+## 致謝
+
+* nedwu(https://github.com/nedwu) 的程式碼
+* 黃祈恩(https://www.facebook.com/profile.php?id=100051647619113&sk=about) 幫忙將台鐵車站代碼基本資料的 CSV 檔案更正
+* 施佩佶(https://www.facebook.com/profile.php?id=100009938435817) 於 2020.10.16 通報 6655、6657 車次錯誤問題
+* 張柏皓(https://www.facebook.com/profile.php?id=100066832751160) 於 2023.04.19 通報 6105、6702 車次錯誤問題
+
+感謝以上網友對於本程式的建議與錯誤回報，您的協助能讓本程式更臻完整，感謝！

@@ -1,71 +1,43 @@
-# 台鐵運行圖 Python 版
 import sys
 import os
 import io
 import shutil
 import time
+import queue
 
 # 自訂class與module
 import read_tra_json as tra_json
-import data_process as dp
-import diagram_maker as dm
+import tradata_process as tp
+import diagram_process as dp
 from progessbar import progress
+import environment_variable as ev
 
+Globals = ev.Singleton_GlobalVariables_Instance
 
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-version = '1.03'
-
-lines_diagram_setting = {'LINE_WN': ['/west_link_north/WESTNORTH_', 'LINE_WN', 3000],
-                         'LINE_WM': ['/west_link_moutain/WESTMOUNTAIN_', 'LINE_WM', 2000],
-                         'LINE_WSEA': ['/west_link_sea/WESTSEA_', 'LINE_WSEA', 2000],
-                         'LINE_WS': ['/west_link_south/WESTSOUTH_', 'LINE_WS', 4000],
-                         'LINE_P': ['/pingtung/PINGTUNG_', 'LINE_P', 2000],
-                         'LINE_S': ['/south_link/SOUTHLINK_', 'LINE_S', 2000],
-                         'LINE_T': ['/taitung/TAITUNG_', 'LINE_T', 2000],
-                         'LINE_N': ['/north_link/NORTHLINK_', 'LINE_N', 2000],
-                         'LINE_I': ['/yilan/YILAN_', 'LINE_I', 2000],
-                         'LINE_PX': ['/pingxi/PINGXI_', 'LINE_PX', 1250],
-                         'LINE_NW': ['/neiwan/NEIWAN_', 'LINE_NW', 1250],
-                         'LINE_J': ['/jiji/JIJI_', 'LINE_J', 1250],
-                         'LINE_SL': ['/shalun/SHALUN_', 'LINE_SL', 650]}
-
-lines_diagram_setting_test = {'LINE_WN': ['/WESTNORTH_', 'LINE_WN', 3000],
-                              'LINE_WM': ['/WESTMOUNTAIN_', 'LINE_WM', 2000],
-                              'LINE_WSEA': ['/WESTSEA_', 'LINE_WSEA', 2000],
-                              'LINE_WS': ['/WESTSOUTH_', 'LINE_WS', 4000],
-                              'LINE_P': ['/PINGTUNG_', 'LINE_P', 2000],
-                              'LINE_S': ['/SOUTHLINK_', 'LINE_S', 2000],
-                              'LINE_T': ['/TAITUNG_', 'LINE_T', 2000],
-                              'LINE_N': ['/NORTHLINK_', 'LINE_N', 2000],
-                              'LINE_I': ['/YILAN_', 'LINE_I', 2000],
-                              'LINE_PX': ['/PINGXI_', 'LINE_PX', 1250],
-                              'LINE_NW': ['/NEIWAN_', 'LINE_NW', 1250],
-                              'LINE_J': ['/JIJI_', 'LINE_J', 1250],
-                              'LINE_SL': ['/SHALUN_', 'LINE_SL', 650]}
-
-diagram_hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 1, 2, 3, 4, 5, 6]
-
 
 # 程式執行段
 def main (argv_json_location, argv_website_svg_location, argv_select_trains, move_file):
 
-    json_files = []
     all_after_midnight_data = []
 
     check_output_folder(argv_website_svg_location)
 
+     # 建立佇列
+    json_files_queue = queue.Queue()
+
     for root, dirs, files in os.walk(argv_json_location + '/'):
         for file in files:
             if file.split('.')[1] == 'json':
-                json_files.append(file.split('.')[0])
+                json_files_queue.put(file.split('.')[0])
 
-    json_files.sort()
-
-    total = len(json_files)
+    total = json_files_queue.qsize()
     print("共有" + str(total) + "個JSON檔案需要轉檔。" + "\n")
 
     if total != 0:
-        for file_date in json_files:
+        while not json_files_queue.empty():
+        # for file_date in json_files:
+            file_date = json_files_queue.get()
             file_name = file_date + ".json"
             start = time.time()
 
@@ -96,15 +68,15 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                 progress(count, total, "目前製作車次：" + train_id)
 
                 # 查詢表定台鐵時刻表所有「停靠」車站，可查詢特定車次
-                dict_start_end_station = dp.find_train_stations(train_no)
+                dict_start_end_station = tp.find_train_stations(train_no)
 
                 # 查詢特定車次所有「停靠與通過」車站
-                list_passing_stations = dp.find_passing_stations(dict_start_end_station,
+                list_passing_stations = tp.find_passing_stations(dict_start_end_station,
                                                                  line,
                                                                  line_dir)
 
                 # 推算所有通過車站的時間與位置
-                list_train_time_space = dp.estimate_time_space(dict_start_end_station, list_passing_stations)
+                list_train_time_space = tp.estimate_time_space(dict_start_end_station, list_passing_stations)
 
                 for key, value in list_train_time_space[0].items():
                     all_trains_data.append([key, train_id, car_class, line, over_night_stn, None, value])
@@ -116,12 +88,7 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                     all_trains_data.append(["LINE_WN", train_id, car_class, line, over_night_stn, key + train_id, value])
 
             # 繪製運行圖
-            dm.TimeSpaceDiagram(lines_diagram_setting,
-                                all_trains_data,
-                                argv_website_svg_location,
-                                file_date.split('.')[0],
-                                diagram_hours,
-                                version)
+            dp.Draw(all_trains_data, argv_website_svg_location, file_date)
 
             if move_file == True:
                 if os.path.exists('JSON/' + file_name):
@@ -155,7 +122,7 @@ if __name__ == "__main__":
     Parameters = [] # 參數集：參數1: JSON 檔位置, 參數2: 運行圖檔案存檔位置, 參數3: 特定車次繪製
 
     print('************************************')
-    print('台鐵JSON轉檔運行圖程式 - 版本：' + version)
+    print('台鐵JSON轉檔運行圖程式 - 版本：' + Globals.Version)
     print('************************************\n')
 
     if len(sys.argv) == 4:

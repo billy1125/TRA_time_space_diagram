@@ -1,22 +1,24 @@
-import pandas as pd  # 引用套件並縮寫為 pd
+# 台鐵公開資料(JSON)轉換
+
+import pandas as pd  
 import numpy as np
 
 # 自訂class與module
-import basic_data
+import environment_variable as ev
 
-GlobalVariables = basic_data.GlobalVariables()
+Globals = ev.Singleton_GlobalVariables_Instance
 
 # 處理所有車站基本資訊(Stations.csv)
-stations = GlobalVariables.Stations
+stations = Globals.Stations
 
 # 時間轉換(Locate.csv)
-time_loc = GlobalVariables.TimeLocation
+time_loc = Globals.TimeLocation
 
 # 類別資料檔(Category.csv)
-category = GlobalVariables.Category
+category = Globals.Category
 
 # 各營運路線車站於運行圖中的位置，用於運行線的繪製
-lines_stations = GlobalVariables.LinesStations
+lines_stations = Globals.LinesStations
 
 # 山海線車站，去除竹南與彰化，用於檢查是否是成追線車次
 Station_SEA = []

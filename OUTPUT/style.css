@@ -1,6 +1,5 @@
 line {
-    stroke-width:0.3;
-    
+    stroke-width:0.3;    
 }
 
 .hour_line {
@@ -24,12 +23,12 @@ line {
 }
 
 path {
-    stroke-width:2.0;
+    stroke-width:2.5;
     fill:none
 }
 
 .taroko {
-    stroke:#a6a6a6;
+    stroke:#20b2aa;
 }
 
 .puyuma {
@@ -37,39 +36,41 @@ path {
 }
 
 .tze_chiang {
-    stroke:#c98671;
+    stroke:#ffa500;
 }
 
 .tze_chiang_diesel {
-    stroke:#ff8000;
+    stroke:#ffd700;
 }
 
 .emu1200{
-    stroke: #ff008c;
-	stroke-dasharray:25,5;
+    stroke:#ff008c;
 }
 
 .emu300{
     stroke:#ff4444;
-	stroke-dasharray:25,5;
 }
 
-.chu_kuang {
-    stroke:#ffcc00;
-}
-
-.local {
-    stroke:#0000cc;
-}
-
-.fu_hsing {
-    stroke:#7094db;
-}
-
-.ordinary {
+.emu3000{
     stroke:#000000;
 }
 
+.chu_kuang {
+    stroke:#ff8c00;
+}
+
+.local {
+    stroke:#0000ff;
+}
+
+.fu_hsing {
+    stroke:#00bfff;
+}
+
+.ordinary {
+    stroke:#ff1493;
+}
+
 .special {
-    stroke:#4dff4d;
+    stroke:#ff1493;
 }
