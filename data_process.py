@@ -57,7 +57,7 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
         roundabout_train = True
 
     # 判斷是不是成追線
-    cheng_zhui = _find_cheng_zhui(dict_start_end_station, start_station, end_station)
+    cheng_zhui = find_cheng_zhui(line, dict_start_end_station, start_station, end_station)
 
     # 判斷是不是內灣六家線，目前均為區間車，並且具備六家、竹東二站
     neiwan = False
@@ -204,10 +204,12 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
 
 
 # 判斷成追線車次
-def _find_cheng_zhui(list_start_end_station, start_station, end_station):
+def find_cheng_zhui(line, list_start_end_station, start_station, end_station):
     result = False
 
-    if list_start_end_station.__contains__('2260') and list_start_end_station.__contains__('3350'):  # 區間車，具備成功、追分二站
+    if (line == "3"):
+        result = True
+    elif list_start_end_station.__contains__('2260') and list_start_end_station.__contains__('3350'):  # 區間車，具備成功、追分二站
         result = True
     elif (start_station in Station_SEA and end_station in Station_MOUNTAIN) or (
             start_station in Station_MOUNTAIN and end_station in Station_SEA):  # 區間快，起訖車站為山海線兩端車站
@@ -224,6 +226,7 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
     station_id = []
     time = []
     loc = []
+    stop_station = []
 
     is_roundabout_train = False
 
@@ -231,7 +234,7 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
     _dict_lines_operation = {}
 
     for key, value in lines_stations.items():
-        _dict_lines_operation[key] = [[], [], [], []]
+        _dict_lines_operation[key] = [[], [], [], [], []]
 
     _dict_roundabout = {}
 
@@ -250,11 +253,13 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
             station.append(StationName)
             loc.append(float(KM))
             time.append(ARRTime)
+            stop_station.append("Y")
 
             station_id.append(StationId)
             station.append(StationName)
             loc.append(float(KM))
             time.append(DEPTime)
+            stop_station.append("Y")
 
         else:  # 通過不停靠之車站處理
 
@@ -262,8 +267,9 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
             station.append(StationName)
             loc.append(float(KM))
             time.append(np.NaN)
+            stop_station.append("N")
 
-    dict_temp = {"Station": station, "Time": time, "Loc": loc, "StationID": station_id}
+    dict_temp = {"Station": station, "Time": time, "Loc": loc, "StationID": station_id, "StopStation": stop_station}
 
     select_df = pd.DataFrame(dict_temp)
 
@@ -283,8 +289,10 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
 
             last_time_value = row['Time']
 
-    select_df = select_df.set_index('Loc').interpolate(method='index')
-    select_df = select_df.reset_index()
+    # select_df.set_index('Loc', inplace=True)
+    # select_df.interpolate(method='index' , inplace=True)
+    select_df.interpolate(method='linear' , inplace=True)
+    select_df.reset_index()
 
     # _將通過的估計時間弄進暫存的各營運路線表格
     for index, row in select_df.iterrows():
@@ -294,9 +302,10 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
                 _dict_lines_operation[key][1].append(row['StationID'])
                 _dict_lines_operation[key][2].append(row['Time'])
                 _dict_lines_operation[key][3].append(float(value[row['StationID']][0]))
+                _dict_lines_operation[key][4].append(row['StopStation'])
 
     for key, value in _dict_lines_operation.items():
-        dict_temp = {"Station": value[0], "StationID": value[1], "Time": value[2], "Loc": value[3]}
+        dict_temp = {"Station": value[0], "StationID": value[1], "Time": value[2], "Loc": value[3], "StopStation": value[4]}
         select_df = pd.DataFrame(dict_temp)
         _dict_lines_operation[key] = select_df
 
@@ -332,7 +341,7 @@ def estimate_time_space(dict_start_end_station, list_passing_stations):
     for key, value in _dict_lines_operation.items():
         index_label = value.query('Time >= 2880').index.tolist()
         if len(index_label) >= 2:
-            row_value = ['跨午夜', "-1", 2880, np.NaN]
+            row_value = ['跨午夜', "-1", 2880, np.NaN, "Y"]
             select_df = _insert_row(index_label[0], value, row_value)  # 插入一個虛擬的跨午夜車站
 
             select_df = select_df.set_index('Time').interpolate(method='index')  # 依據時間估計跨午夜的位置

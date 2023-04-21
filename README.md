@@ -4,13 +4,14 @@
 |---|---|
 |Author|呂卓勳 Cho-Hsun Lu|
 |E-mail|billy1125@gmail.com|
-|版本|1.021|
+|版本|1.03|
 
 ## 致謝
 
-* nedwu(https://github.com/nedwu) 的程式碼。
+* nedwu(https://github.com/nedwu) 的程式碼
 * 黃祈恩(https://www.facebook.com/profile.php?id=100051647619113&sk=about) 幫忙將台鐵車站代碼基本資料的 CSV 檔案更正
 * 施佩佶(https://www.facebook.com/profile.php?id=100009938435817) 於 2020.10.16 通報 6655、6657 車次錯誤問題
+* 張柏皓(https://www.facebook.com/profile.php?id=100066832751160) 於 2023.04.19 通報 6105、6702 車次錯誤問題
 
 感謝以上網友對於本程式的建議與錯誤回報，您的協助能讓本程式更臻完整，感謝！
 
@@ -28,10 +29,10 @@
 
 ## 執行語言與所需相關套件
 
-目前本程式主要於 Python 3.7x 開發，除此之外本程式需要以下套件，包括：
+目前本程式主要於 Python 3.9x 開發，除此之外本程式需要以下套件，包括：
 
-* [Pandas](https://github.com/pandas-dev/pandas)：用於列車推算通過車站時間，本程式開發使用版本為 0.24.2
-* [beautifulsoup4](https://github.com/getanewsletter/BeautifulSoup4)：用於擷取台鐵 JSON，本程式開發使用版本為 4.7.1
+* [Pandas](https://github.com/pandas-dev/pandas)：用於列車推算通過車站時間，本程式開發使用版本為 2.0.0
+* [beautifulsoup4](https://github.com/getanewsletter/BeautifulSoup4)：用於擷取台鐵 JSON，本程式開發使用版本為 4.11.1
 
 進度條程式碼則採用 Vladimir Ignatev 所設計的[程式](https://gist.github.com/davincif/3e1cb5ef1c4007d4f5ca690d68db8e7b)。svg 繪圖部分程式感謝 [nedwu](https://github.com/nedwu)的啟發，並且參考其[專案部分程式碼](https://github.com/nedwu/TRAOpenDataDiagramer)。
 
@@ -55,7 +56,7 @@ $ python batch.py
 
 ```
 ************************************
-台鐵JSON轉檔運行圖程式 - 版本：1.02
+台鐵JSON轉檔運行圖程式 - 版本：1.03
 ************************************
 ```
 

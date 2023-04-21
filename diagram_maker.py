@@ -11,6 +11,7 @@ dict_car_kind = {
     '1101': 'taroko',
     '1102': 'taroko',
     '1103': 'tze_chiang_diesel',
+    '1104': 'special',
     '1105': 'tze_chiang',
     '1106': 'tze_chiang',
     '1107': 'puyuma',
@@ -22,6 +23,8 @@ dict_car_kind = {
     '110D': 'tze_chiang_diesel',
     '110E': 'tze_chiang_diesel',
     '110F': 'tze_chiang_diesel',
+    '110G': 'emu3000',
+    '110H': 'emu3000',
     '1110': 'chu_kuang',
     '1111': 'chu_kuang',
     '1112': 'chu_kuang',
@@ -58,17 +61,17 @@ with open('CSV/Category.csv', newline='', encoding='utf8') as csvfile:
     list_csv = []
 
     for row in reader:
-        list_csv.append([row['KIND'], row['ID'], row['DSC'], row['EXTRA1']])
+        list_csv.append([row['KIND'], row['ID'], row['DSC'], row['EXTRA1'], row['TERMINAL']])
 
     for line in lines:
         stations_loc = {}
         stations_loc_for_background = []
         log = 0
-        for kind, id, dsc, extra1 in list_csv:
+        for kind, id, dsc, extra1, terminal in list_csv:
             log += 1
             if line == kind:
                 if id != 'NA':
-                    stations_loc[id] = [float(extra1), dsc]
+                    stations_loc[id] = [float(extra1), dsc, terminal]
                 stations_loc_for_background.append([kind, id, dsc, extra1])
 
             lines_stations[line] = stations_loc
@@ -97,28 +100,30 @@ class TimeSpaceDiagram:
                                                     diagram_hours,
                                                     version)
 
-        # 繪製各車次線
+        # 各車次線路徑的轉換
         for line_kind, train_id, car_class, line_dir, over_night_stn, option_id, train_time_space in all_trains:
-            self.draw_train(line_kind, train_id, car_class, line_dir, option_id, train_time_space, self.diagrams)
+            self.set_train_path(line_kind, train_id, car_class, line_dir, option_id, train_time_space, self.diagrams)
 
         for key, value in self.diagrams.items():
             value.save_file()
 
-    # 繪製車次線
-    def draw_train(self, line_kind, train_id, car_class, line_dir, option_id, train_time_space, diagrams):
+    # 轉換車次線路徑
+    def set_train_path(self, line_kind, train_id, car_class, line_dir, option_id, train_time_space, diagrams):
 
-        color = dict_car_kind.get(car_class, 'ordinary')
-        dict_filtered_stations = {}
+        color = dict_car_kind.get(car_class, 'special')
+        # dict_filtered_stations = {}
 
-        for item in lines:
-            dict_filtered_stations[item] = []
+        # for item in lines:
+        #     dict_filtered_stations[item] = []
 
         path = "M"
 
         for index, row in train_time_space.iterrows():
-            x = round(row['Time'] * 10 + 50 - self.offset, 4)
-            y = round(row['Loc'] + 50, 4)
-            path += str(x) + ',' + str(y) + ' '
+            if row['StopStation'] == "Y" or lines_stations[line_kind][row['StationID']][2] == "Y":
+                # if row['StopStation'] == "Y" and lines_stations['']:
+                x = round(row['Time'] * 10 + 50 - self.offset, 4)
+                y = round(row['Loc'] + 50, 4)
+                path += str(x) + ',' + str(y) + ' '
 
         diagrams[line_kind].draw_line(train_id, path, color, option_id)
 

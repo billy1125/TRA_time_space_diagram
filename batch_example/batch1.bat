@@ -1,0 +1,1 @@
+python C:\Python\TRA_time_space_diagram\batch.py C:\Python\TRA_time_space_diagram\JSON C:\Python\TRA_time_space_diagram\OUTPUT ALL

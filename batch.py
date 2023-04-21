@@ -13,7 +13,7 @@ from progessbar import progress
 
 
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-version = '1.021'
+version = '1.03'
 
 lines_diagram_setting = {'LINE_WN': ['/west_link_north/WESTNORTH_', 'LINE_WN', 3000],
                          'LINE_WM': ['/west_link_moutain/WESTMOUNTAIN_', 'LINE_WM', 2000],
