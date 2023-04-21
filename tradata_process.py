@@ -9,28 +9,25 @@ import environment_variable as ev
 Globals = ev.Singleton_GlobalVariables_Instance
 
 # 處理所有車站基本資訊(Stations.csv)
-stations = Globals.Stations
+route = Globals.Route
 
 # 時間轉換(Locate.csv)
 time_loc = Globals.TimeLocation
-
-# 類別資料檔(Category.csv)
-category = Globals.Category
 
 # 各營運路線車站於運行圖中的位置，用於運行線的繪製
 lines_stations = Globals.LinesStations
 
 # 山海線車站，去除竹南與彰化，用於檢查是否是成追線車次
-Station_SEA = []
-Station_MOUNTAIN = []
+# Station_SEA = []
+# Station_MOUNTAIN = []
 
-for item in category:
-    if item[0] == 'LINE_WSEA':
-        if item[1] not in ["1250", "3360"]:
-            Station_SEA.append(item[1])
-    if item[0] == 'LINE_WM':
-        if item[1] not in ["1250", "3360"]:
-            Station_MOUNTAIN.append(item[1])
+# for item in statons:
+#     if item[0] == 'LINE_WSEA':
+#         if item[1] not in ["1250", "3360"]:
+#             Station_SEA.append(item[1])
+#     if item[0] == 'LINE_WM':
+#         if item[1] not in ["1250", "3360"]:
+#             Station_MOUNTAIN.append(item[1])
 
 
 # 找出每一個車次的表定經過車站
@@ -59,7 +56,7 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
         roundabout_train = True
 
     # 判斷是不是成追線
-    cheng_zhui = find_cheng_zhui(line, dict_start_end_station, start_station, end_station)
+    cheng_zhui = _find_cheng_zhui(line, dict_start_end_station, start_station, end_station)
 
     # 判斷是不是內灣六家線，目前均為區間車，並且具備六家、竹東二站
     neiwan = False
@@ -81,7 +78,7 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
     if dict_start_end_station.__contains__('4272'):
         shalun = True
 
-    global stations
+    # global stations
 
     list_passing_stations = []
     temp = []
@@ -91,71 +88,71 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
 
     while True:
 
-        temp.append([stations[station][0], stations[station][1], stations[station][3], km])
+        temp.append([route[station][0], route[station][1], route[station][3], km])
 
         if line_dir == '2':  # 逆行
 
             if cheng_zhui == False:
-                branch = stations[station][6]
+                branch = route[station][6]
                 if branch != '':
                     if station == '7360':  # 平溪深澳線處理，瑞芳判斷
                         if end_station == '7362':
-                            km += float(stations[station][12])
+                            km += float(route[station][12])
                             station = '7361'  # 指定到海科館站
                         elif end_station != '7362':
-                            km += float(stations[station][10])
-                            station = stations[station][4]
+                            km += float(route[station][10])
+                            station = route[station][4]
                     elif station == '3430':  # 集集線處理，二水判斷
                         if jiji == True:
-                            km += float(stations[station][12])
+                            km += float(route[station][12])
                             station = '3431'
                         elif jiji == False:
-                            km += float(stations[station][10])
-                            station = stations[station][4]
+                            km += float(route[station][10])
+                            station = route[station][4]
                     elif station == '4270':  # 沙崙線處理，中洲判斷
                         if shalun == True:
-                            km += float(stations[station][12])
+                            km += float(route[station][12])
                             station = '4271'
                         elif shalun == False:
-                            km += float(stations[station][10])
-                            station = stations[station][4]
+                            km += float(route[station][10])
+                            station = route[station][4]
                     else:
                         # 山海線判斷
                         if line in ['1', '0']:  # 山線與其他
-                            km += float(stations[station][10])
-                            station = stations[station][4]
+                            km += float(route[station][10])
+                            station = route[station][4]
                         elif line == '2':  # 海線
-                            km += float(stations[station][12])
-                            station = stations[station][6]
+                            km += float(route[station][12])
+                            station = route[station][6]
                 else:
-                    km += float(stations[station][10])
-                    station = stations[station][4]
+                    km += float(route[station][10])
+                    station = route[station][4]
             else:  # 成追線
-                km += float(stations[station][14])
-                station = stations[station][8]
+                km += float(route[station][14])
+                station = route[station][8]
 
         elif line_dir == '1':  # 順行
 
             if cheng_zhui == False:
-                branch = stations[station][7]
+                branch = route[station][7]
                 if branch != '':
                     if station == '0920':  # 八堵判斷
                         if end_station != '0900':  # 終點站非基隆的車次下一車站直接指定為暖暖
-                            km += float(stations[station][13])
-                            station = stations[station][7]
+                            km += float(route[station][13])
+                            station = route[station][7]
                         elif end_station == '0900':  # 終點站為基隆的車次
-                            km += float(stations[station][11])
-                            station = stations[station][5]
+                            km += float(route[station][11])
+                            station = route[station][5]
                     elif station == '7130':  # 蘇澳新判斷
                         if end_station == '7120':  # 終點站為蘇澳
-                            km += float(stations[station][13])
+                            km += float(route[station][13])
                             station = '7120'
                         elif end_station != '7120':  # 終點站非蘇澳的車次下一車站直接指定為永樂
-                            km += float(stations[station][11])
+                            km += float(route[station][11])
                             station = '7110'
                     elif station in ['1190', '1193']:  # 內灣六家線處理，北新竹與竹中判斷
                         if neiwan == True:  # 終點站為六家或內灣
-                            km += float(stations[station][13])
+                            km += float(route[station][13])
                             if station == '1190':
                                 station = '1191'
                             elif station == '1193':
@@ -164,36 +161,36 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
                                 elif end_station == '1194':
                                     station = '1194'
                         elif neiwan == False:  # 終點站非六家或內灣的車次下一車站直接指定為竹北
-                            km += float(stations[station][11])
+                            km += float(route[station][11])
                             station = '1180'
                     elif station == '7330':  # 平溪深澳線處理，三貂嶺判斷
                         if pingxi == True:
-                            km += float(stations[station][13])
+                            km += float(route[station][13])
                             station = '7331'
                         elif pingxi == False:  # 終點站非平溪深澳線的車次下一車站直接指定為牡丹
-                            km += float(stations[station][11])
+                            km += float(route[station][11])
                             station = '7320'
                     else:  # 山海線判斷
                         if line in ['1', '0']:  # 山線或其他
-                            km += float(stations[station][11])
-                            station = stations[station][5]
+                            km += float(route[station][11])
+                            station = route[station][5]
                         elif line == '2':  # 海線
-                            km += float(stations[station][13])
-                            station = stations[station][7]
+                            km += float(route[station][13])
+                            station = route[station][7]
                 else:
                     # if station != '2214':
-                    km += float(stations[station][11])
-                    station = stations[station][5]
+                    km += float(route[station][11])
+                    station = route[station][5]
             else:  # 成追線
-                km += float(stations[station][15])
-                station = stations[station][9]
+                km += float(route[station][15])
+                station = route[station][9]
 
         if station == end_station:
             if roundabout_train == True:
-                temp.append(['1001', stations[station][1], stations[station][3], km])
+                temp.append(['1001', route[station][1], route[station][3], km])
                 break
             else:
-                temp.append([stations[station][0], stations[station][1], stations[station][3], km])
+                temp.append([route[station][0], route[station][1], route[station][3], km])
                 break
 
         if len(temp) > 200:
@@ -206,16 +203,16 @@ def find_passing_stations(dict_start_end_station, line, line_dir):
 
 
 # 判斷成追線車次
-def find_cheng_zhui(line, list_start_end_station, start_station, end_station):
+def _find_cheng_zhui(line, list_start_end_station, start_station, end_station):
     result = False
 
     if (line == "3"):
         result = True
     elif list_start_end_station.__contains__('2260') and list_start_end_station.__contains__('3350'):  # 區間車，具備成功、追分二站
         result = True
-    elif (start_station in Station_SEA and end_station in Station_MOUNTAIN) or (
-            start_station in Station_MOUNTAIN and end_station in Station_SEA):  # 區間快，起訖車站為山海線兩端車站
-        result = True
+    # elif (start_station in Station_SEA and end_station in Station_MOUNTAIN) or (
+    #         start_station in Station_MOUNTAIN and end_station in Station_SEA):  # 區間快，起訖車站為山海線兩端車站
+    #     result = True
 
     return result
 

@@ -32,7 +32,7 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                 json_files_queue.put(file.split('.')[0])
 
     total = json_files_queue.qsize()
-    print("共有" + str(total) + "個JSON檔案需要轉檔。" + "\n")
+    print("共有 {0} 個 JSON 檔案需要轉檔。\n".format(str(total)))
 
     if total != 0:
         while not json_files_queue.empty():
@@ -41,7 +41,7 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
             file_name = file_date + ".json"
             start = time.time()
 
-            print("目前進行日期" + file_date + "轉檔。" + "\n")
+            print("目前進行日期「{0}」轉檔。\n".format(file_date))
 
             # 讀取 JSON 檔案，可選擇特定車次(argv_select_trains)
             all_trains_json = tra_json.find_trains(tra_json.read_json(file_name), argv_select_trains)
@@ -65,7 +65,7 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                 line_dir = train_no['LineDir']  # 順逆行
 
                 count += 1
-                progress(count, total, "目前製作車次：" + train_id)
+                progress(count, total, "目前製作車次：{0}".format(train_id))
 
                 # 查詢表定台鐵時刻表所有「停靠」車站，可查詢特定車次
                 dict_start_end_station = tp.find_train_stations(train_no)
@@ -88,7 +88,7 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                     all_trains_data.append(["LINE_WN", train_id, car_class, line, over_night_stn, key + train_id, value])
 
             # 繪製運行圖
-            dp.Draw(all_trains_data, argv_website_svg_location, file_date)
+            dp.draw(all_trains_data, argv_website_svg_location, file_date)
 
             if move_file == True:
                 if os.path.exists('JSON/' + file_name):
@@ -96,7 +96,7 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
 
             end = time.time()
 
-            print("檔案轉換完成！轉換時間共" + str(round(end - start, 2)) + "秒\n")
+            print("檔案轉換完成！轉換時間共 {0} 秒\n".format(str(round(end - start, 2))))
 
     else:
         print('無法執行！原因為沒有讀取到 JSON 檔案。\n')
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     Parameters = [] # 參數集：參數1: JSON 檔位置, 參數2: 運行圖檔案存檔位置, 參數3: 特定車次繪製
 
     print('************************************')
-    print('台鐵JSON轉檔運行圖程式 - 版本：' + Globals.Version)
+    print('台鐵JSON轉檔運行圖程式 - 版本：{0}'.format(Globals.Version))
     print('************************************\n')
 
     if len(sys.argv) == 4:

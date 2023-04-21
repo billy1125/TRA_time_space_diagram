@@ -137,3 +137,4 @@ class Diagram:
         self.fileHandler.close()
 
         return Globals.LineDescription[self.line] + ' 日期：' + self.date + ' 運行圖繪製完成 \n'
+    

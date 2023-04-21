@@ -4,12 +4,12 @@ import csv
 
 class GlobalVariables:
     def __init__(self):
-        self.Version = "1.3.1"
+        self.Version = "1.3.2"
         self.Lines = ['LINE_WN', 'LINE_WM', 'LINE_WSEA', 'LINE_WS', 'LINE_P', 'LINE_S', 'LINE_T', 'LINE_N', 'LINE_I', 'LINE_PX', 'LINE_NW', 'LINE_J', 'LINE_SL']
         self.LinesStations = {}  # 各營運路線車站於運行圖中的位置，用於運行線的繪製
         self.LinesStationsForBackground = {}  # 各營運路線車站於運行圖中的位置，包含廢站、號誌站等車站
-        self.Category = []
-        self.Stations = {}
+        # self.Stations = []
+        self.Route = {}
         self.TimeLocation = {}
         self.DiagramHours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 1, 2, 3, 4, 5, 6] # 一天每一小時的文字清單
         self.CarKind = {
@@ -71,22 +71,22 @@ class GlobalVariables:
                          'LINE_J': ['/jiji/JIJI_', 'LINE_J', 1250],
                          'LINE_SL': ['/shalun/SHALUN_', 'LINE_SL', 650]}
 
-        # 處理所有基本資訊(Category.csv)
-        with open('CSV/Category.csv', newline='', encoding='utf8') as csvfile:
+        # 處理所有營運路線的車站基本資訊(Stations.csv)
+        # with open('CSV/Stations.csv', newline='', encoding='utf8') as csvfile:
 
-            reader = csv.reader(csvfile)
+        #     reader = csv.reader(csvfile)
 
-            for row in reader:
-                self.Category.append(row)
+        #     for row in reader:
+        #         self.Stations.append(row)
 
-        # 處理所有車站基本資訊(Stations.csv)
-        with open('CSV/Stations.csv', newline='', encoding='utf8') as csvfile:
+        # 處理所有車站基本資訊(Route.csv)
+        with open('CSV/Route.csv', newline='', encoding='utf8') as csvfile:
 
             reader = csv.reader(csvfile)
 
             for row in reader:
                 # print(row[0])
-                self.Stations[row[0]] = row
+                self.Route[row[0]] = row
 
         # 時間轉換(Locate.csv)
         with open('CSV/Locate.csv', newline='', encoding='big5') as csvfile:
@@ -96,8 +96,8 @@ class GlobalVariables:
                 # print(row[0])
                 self.TimeLocation[row[0]] = row[2]
 
-        # 處理所有車站基本資訊(Category.csv)
-        with open('CSV/Category.csv', newline='', encoding='utf8') as csvfile:
+        # 處理所有營運路線的車站基本資訊(Stations.csv)
+        with open('CSV/Stations.csv', newline='', encoding='utf8') as csvfile:
             reader = csv.DictReader(csvfile)
             list_csv = []
 

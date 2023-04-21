@@ -6,7 +6,7 @@ import diagram as dm
 
 Globals = ev.Singleton_GlobalVariables_Instance
 
-def Draw(all_trains, location, date):
+def draw(all_trains, location, date):
 
     offset = Globals.DiagramHours[0] * 600  # 將整個圖形往左移動的距離
 
