@@ -12,7 +12,7 @@ import diagram_process as dp
 from progessbar import progress
 import environment_variable as ev
 
-Globals = ev.Singleton_GlobalVariables_Instance
+Globals = ev.GlobalVariables()
 
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 

@@ -6,7 +6,7 @@ import numpy as np
 # 自訂class與module
 import environment_variable as ev
 
-Globals = ev.Singleton_GlobalVariables_Instance
+Globals = ev.GlobalVariables()
 
 # 處理所有車站基本資訊(Stations.csv)
 route = Globals.Route

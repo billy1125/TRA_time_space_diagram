@@ -4,7 +4,7 @@
 import environment_variable as ev
 import diagram as dm
 
-Globals = ev.Singleton_GlobalVariables_Instance
+Globals = ev.GlobalVariables()
 
 def draw(all_trains, location, date):
 

@@ -4,7 +4,7 @@
 import time
 import environment_variable as ev
 
-Globals = ev.Singleton_GlobalVariables_Instance
+Globals = ev.GlobalVariables()
 
 class Diagram:
     def __init__(self, stations_to_draw, location, date, line, width, height, diagram_hours):
