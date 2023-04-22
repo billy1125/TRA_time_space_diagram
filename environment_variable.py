@@ -94,10 +94,10 @@ class GlobalVariables:
 
             for row in reader:
                 # print(row[0])
-                self.Route[row[0]] = row
+                self.Route[row[0]] = tuple(row)
 
         # 時間轉換(Locate.csv)
-        with open('CSV/Locate.csv', newline='', encoding='big5') as csvfile:
+        with open('CSV/Locate.csv', newline='', encoding='utf8') as csvfile:
             reader = csv.reader(csvfile)
 
             for row in reader:
