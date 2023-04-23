@@ -7,6 +7,7 @@ import environment_variable as ev
 Globals = ev.GlobalVariables()
 
 class Diagram:
+    
     def __init__(self, stations_to_draw, location, date, line, width, height, diagram_hours):
 
         self.file_name = location + date + '.svg'

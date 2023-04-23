@@ -22,8 +22,9 @@ def draw(all_trains, location, date):
                                     Globals.DiagramHours)
 
     # 各車次線路徑的轉換
-    for line_kind, train_id, car_class, line_dir, over_night_stn, option_id, train_time_space in all_trains:
-        set_train_path(line_kind, train_id, car_class, offset, option_id, train_time_space, diagrams)
+    for train in all_trains:
+        for line_kind, train_id, car_class, line_dir, over_night_stn, option_id, train_time_space in train:
+            set_train_path(line_kind, train_id, car_class, offset, option_id, train_time_space, diagrams)
 
     for key, value in diagrams.items():
         value.save_file()
