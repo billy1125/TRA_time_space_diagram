@@ -117,7 +117,7 @@ class Diagram:
                     self._add_text(str(5 + i * 1200), str(y - 5), StationName, "#c2c2a3", None, None)
 
     # 繪製線條
-    def draw_line(self, train_id, path, color, option_id = None):
+    def draw_line(self, train_id, path, text_position, color, option_id = None):
 
         if option_id is None:
             line_id = train_id
@@ -126,8 +126,8 @@ class Diagram:
 
         if path != 'M':  # 避免無資料
             self._add_path(path, line_id, None, color, None)
-            for i in range(0, 6):
-                self._add_path_text(line_id, train_id, color, str(50 + 600 * i))
+            for item in text_position:
+                self._add_path_text(line_id, train_id, color, str(item))
             # for i in range(0, 5):
             #     self._add_path_text(line_id, train_id, color, str(20 * i) + "%")
 

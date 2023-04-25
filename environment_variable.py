@@ -12,7 +12,7 @@ class GlobalVariables:
         return cls._instance 
 
     def __init__(self):
-        self.Version = "1.3.3"
+        self.Version = "1.3.4"
         self.Lines = ('LINE_WN', 'LINE_WM', 'LINE_WSEA', 'LINE_WS', 'LINE_P', 'LINE_S', 'LINE_T', 'LINE_N', 'LINE_I', 'LINE_PX', 'LINE_NW', 'LINE_J', 'LINE_SL')
         self.LinesStations = {}  # 各營運路線車站於運行圖中的位置，用於運行線的繪製
         self.LinesStationsForBackground = {}  # 各營運路線車站於運行圖中的位置，包含廢站、號誌站等車站
