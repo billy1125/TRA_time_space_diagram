@@ -114,7 +114,7 @@ if __name__ == "__main__":
             while True:
                 action = input('請問特定車次號碼？\n請輸入車次號後再按Enter鍵。如果有多個車次，請依序輸入各車次，中間以半形空白鍵隔開(例如: 408 426 111)，再按Enter鍵：')
                 if action != '':
-                    select_trains.append(action.split(' '))
+                    select_trains = action.split(' ')
                     break
                 if action == '':
                     break
