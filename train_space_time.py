@@ -238,7 +238,7 @@ class SpaceTime:
         station_id = []
         time = []
         loc = []
-        stop_station = []
+        stop_station_order = []
 
         is_roundabout_train = False
 
@@ -260,18 +260,19 @@ class SpaceTime:
 
                 ARRTime = float(time_loc[dict_start_end_station[StationId][0]])
                 DEPTime = float(time_loc[dict_start_end_station[StationId][1]])
+                Order = int(dict_start_end_station[StationId][3])
 
                 station_id.append(StationId)
                 station.append(StationName)
                 loc.append(float(KM))
                 time.append(ARRTime)
-                stop_station.append("Y")
-
+                stop_station_order.append(Order)
+ 
                 station_id.append(StationId)
                 station.append(StationName)
                 loc.append(float(KM))
                 time.append(DEPTime)
-                stop_station.append("Y")
+                stop_station_order.append(Order)
 
             else:  # 通過不停靠之車站處理
 
@@ -279,9 +280,9 @@ class SpaceTime:
                 station.append(StationName)
                 loc.append(float(KM))
                 time.append(np.NaN)
-                stop_station.append("N")
+                stop_station_order.append(-1)
 
-        dict_temp = {"Station": station, "Time": time, "Loc": loc, "StationID": station_id, "StopStation": stop_station}
+        dict_temp = {"Station": station, "Time": time, "Loc": loc, "StationID": station_id, "StopStation": stop_station_order}
 
         select_df = pd.DataFrame(dict_temp)
 
