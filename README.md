@@ -5,7 +5,7 @@
 |專案名稱|TRA_time_space_diagram|
 |Author|呂卓勳 Cho-Hsun Lu|
 |E-mail|billy1125@gmail.com|
-|版本|1.3.4|
+|版本|1.3.5|
 
 ## 緣起
 
@@ -46,7 +46,7 @@ $ python batch.py
 
 ```
 ************************************
-台鐵JSON轉檔運行圖程式 - 版本：1.3.4
+台鐵JSON轉檔運行圖程式 - 版本：1.3.5
 ************************************
 ```
 之後會顯示本程式的標題，並且顯示版本。
@@ -127,5 +127,7 @@ $ python download_json.py
 * 黃祈恩(https://www.facebook.com/profile.php?id=100051647619113&sk=about) 幫忙將台鐵車站代碼基本資料的 CSV 檔案更正
 * 施佩佶(https://www.facebook.com/profile.php?id=100009938435817) 於 2020.10.16 通報 6655、6657 車次錯誤問題
 * 張柏皓(https://www.facebook.com/profile.php?id=100066832751160) 於 2023.04.19 通報 6105、6702 車次錯誤問題
+* 王羿
+(https://www.facebook.com/profile.php?id=100033320060400) 於 2023.06.03 通報 2023.06.22 5374 車次錯誤問題
 
 感謝以上網友對於本程式的建議與錯誤回報，您的協助能讓本程式更臻完整，感謝！
