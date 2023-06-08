@@ -38,9 +38,6 @@ class SpaceTime:
         for key, value in list_train_time_space[1].items():
             after_midnight_data.append([key, train_id, car_class, line, over_night_stn, "midnight", value])
 
-        for key, value in list_train_time_space[2].items():
-            trains_data.append(["LINE_WN", train_id, car_class, line, over_night_stn, key + train_id, value])
-
         return [trains_data, after_midnight_data]
 
     # 找出每一個車次的表定經過車站
@@ -90,8 +87,6 @@ class SpaceTime:
         shalun = False
         if dict_start_end_station.__contains__('4272'):
             shalun = True
-
-        # global stations
 
         list_passing_stations = []
         temp = []
@@ -211,8 +206,8 @@ class SpaceTime:
                 break
 
         list_passing_stations = temp
-
-        return list_passing_stations  # 清單: [車站ID, 車站名稱, 里程位置, 與下一站相差公里數]
+        brench_line = [pingxi, neiwan, jiji, shalun, cheng_zhui]
+        return list_passing_stations  # 清單: [車站ID, 車站名稱, 里程位置, 與下一站相差公里數], 清單: 屬於哪一個支線
 
 
     # 判斷成追線車次
@@ -246,9 +241,7 @@ class SpaceTime:
         _dict_lines_operation = {}
 
         for key, value in lines_stations.items():
-            _dict_lines_operation[key] = [[], [], [], [], []]
-
-        _dict_roundabout = {}
+            _dict_lines_operation[key] = [[], [], [], [], [], []]
 
         # 判斷是不是環島車次
         if list_passing_stations[len(list_passing_stations) - 1][0] == "1001":
@@ -286,12 +279,17 @@ class SpaceTime:
 
         select_df = pd.DataFrame(dict_temp)
 
+        # 如果是環島車次，將原來終點站台北車站的代碼改為1000
+        if is_roundabout_train == True:
+            row_index = select_df[select_df['StationID'] == "1001"].index
+            for item in row_index:
+                select_df.at[item, 'StationID'] = "1000"
+
         # 將超過午夜的時間一律加上 2880，並且依據車站位置估計通過時間
         last_time_value = -1
         add_midnight = False
 
         for index, row in select_df.iterrows():
-
             if np.isnan(row['Time']) == False:
 
                 if row['Time'] < last_time_value:
@@ -307,6 +305,7 @@ class SpaceTime:
         select_df.interpolate(method='linear' , inplace=True)
         select_df.reset_index()
 
+        stop_order = 0
         # _將通過的估計時間弄進暫存的各營運路線表格
         for index, row in select_df.iterrows():
             for key, value in lines_stations.items():
@@ -316,31 +315,19 @@ class SpaceTime:
                     _dict_lines_operation[key][2].append(row['Time'])
                     _dict_lines_operation[key][3].append(float(value[row['StationID']][0]))
                     _dict_lines_operation[key][4].append(row['StopStation'])
+                    _dict_lines_operation[key][5].append(stop_order)
+            stop_order += 1
 
         for key, value in _dict_lines_operation.items():
-            dict_temp = {"Station": value[0], "StationID": value[1], "Time": value[2], "Loc": value[3], "StopStation": value[4]}
+            dict_temp = {"Station": value[0], "StationID": value[1], "Time": value[2], "Loc": value[3], "StopStation": value[4], "StopOrder": value[5]}
             select_df = pd.DataFrame(dict_temp)
             _dict_lines_operation[key] = select_df
 
         # 資料刪減整理
         drop_key = []
         for key, value in _dict_lines_operation.items():
-            if len(value) < 3: # 資料不足者直接刪除
+            if value.shape[0] == 0: # 資料不足者直接刪除
                 drop_key.append(key)
-
-            elif key == "LINE_WM" or key == "LINE_WSEA": # 部分成追線車次出現追分或成功直達竹南的現象，將竹南車站資料刪除
-                for item in ['3350', '2260']:
-                    indexes = value[(value.StationID == item) | (value.StationID == '1250')].index.tolist()
-                    if len(indexes) > 2:
-                        indexes.sort()
-                        last_index = indexes[len(indexes) - 1]
-                        test_index = list(range(indexes[0], indexes[0] + len(indexes)))
-
-                        if test_index[len(test_index) - 1] == last_index:
-                            index_1028 = value[value.StationID == '1250'].index.tolist()
-                            df = value.copy()
-                            df.drop(df.index[index_1028], inplace=True)
-                            _dict_lines_operation[key] = df
 
                 # 將未通過山海線（竹南、彰化二車站順序為相連）資料刪除
                 index_temp = value[(value.StationID == '3360') | (value.StationID == '1250')].index.tolist()
@@ -354,35 +341,18 @@ class SpaceTime:
         for key, value in _dict_lines_operation.items():
             index_label = value.query('Time >= 2880').index.tolist()
             if len(index_label) >= 2:
-                row_value = ['跨午夜', "-1", 2880, np.NaN, "Y"]
+                row_value = ['跨午夜', "-1", 2880, np.NaN, "Y", value.loc[index_label[0], 'StopOrder'] - 1]
                 select_df = self._insert_row(index_label[0], value, row_value)  # 插入一個虛擬的跨午夜車站
 
                 select_df = select_df.set_index('Time').interpolate(method='index')  # 依據時間估計跨午夜的位置
                 select_df = select_df.reset_index()
 
                 df_after_midnight_train = select_df[index_label[0]:].copy()
-                for index, row in df_after_midnight_train.iterrows():
-                    df_after_midnight_train.loc[index, 'Time'] = row['Time'] - 2880
+                df_after_midnight_train.loc[:, 'Time'] = df_after_midnight_train.loc[:, 'Time'].apply(lambda x : x - 2880) # 每一個時間資料都減2880
 
                 _after_midnight_train[key] = df_after_midnight_train
 
-        # 環島車次處理，基本邏輯：如果該車次車站順序竹南與八堵車站為相鄰，需要拆開來為兩段
-        if is_roundabout_train == True:
-
-            df_line_wn = _dict_lines_operation["LINE_WN"]
-            _dict_lines_operation.pop("LINE_WN")
-
-            indexes_of_0920and1250 = df_line_wn[
-                (df_line_wn.StationID == '0920') | (df_line_wn.StationID == '1250')].index.tolist()
-
-            if abs(indexes_of_0920and1250[0] - indexes_of_0920and1250[1]) == 1:
-                df1 = df_line_wn[0:indexes_of_0920and1250[1]].copy()
-                df2 = df_line_wn[indexes_of_0920and1250[1]:]
-
-                _dict_roundabout["LINE_WN_01"] = df1
-                _dict_roundabout["LINE_WN_02"] = df2
-
-        return _dict_lines_operation, _after_midnight_train, _dict_roundabout  # 本日車次運行資料, 跨午夜車次午夜後的運行資料, 環島車次在西部幹線北段的運行資料
+        return _dict_lines_operation, _after_midnight_train  # 本日車次運行資料, 跨午夜車次午夜後的運行資料
 
 
     # 在 dataframe 插入一列，參考自：https://www.geeksforgeeks.org/insert-row-at-given-position-in-pandas-dataframe/

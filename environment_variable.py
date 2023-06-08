@@ -13,7 +13,7 @@ class GlobalVariables:
 
     def __init__(self):
         self.Version = "1.3.5"
-        self.Lines = ('LINE_WN', 'LINE_WM', 'LINE_WSEA', 'LINE_WS', 'LINE_P', 'LINE_S', 'LINE_T', 'LINE_N', 'LINE_I', 'LINE_PX', 'LINE_NW', 'LINE_J', 'LINE_SL')
+        self.Lines = ('LINE_WN', 'LINE_WM', 'LINE_WSEA', 'LINE_WS', 'LINE_P', 'LINE_S', 'LINE_T', 'LINE_N', 'LINE_I', 'LINE_PX', 'LINE_LJ', 'LINE_NW', 'LINE_J', 'LINE_SL')
         self.LinesStations = {}  # 各營運路線車站於運行圖中的位置，用於運行線的繪製
         self.LinesStationsForBackground = {}  # 各營運路線車站於運行圖中的位置，包含廢站、號誌站等車站
         # self.Stations = []
@@ -62,30 +62,28 @@ class GlobalVariables:
                         'LINE_I': '宜蘭線（八堵-蘇澳）',
                         'LINE_PX': '平溪深澳線（八斗子-菁桐）',
                         'LINE_NW': '內灣線（新竹-內灣）',
+                        'LINE_LJ': '六家線（新竹-六家）',
                         'LINE_J': '集集線（二水-車埕）',
-                        'LINE_SL': '沙崙線（中洲-沙崙',
+                        'LINE_SL': '沙崙線（中洲-沙崙)'
                         }
         self.LinesDiagramSetting = {'LINE_WN': ('/west_link_north/WESTNORTH_', 'LINE_WN', 3000),
                          'LINE_WM': ('/west_link_moutain/WESTMOUNTAIN_', 'LINE_WM', 2000),
                          'LINE_WSEA': ('/west_link_sea/WESTSEA_', 'LINE_WSEA', 2000),
                          'LINE_WS': ('/west_link_south/WESTSOUTH_', 'LINE_WS', 4000),
-                         'LINE_P': ('/pingtung/PINGTUNG_', 'LINE_P', 2000),
+                         'LINE_P': ('/pingtung/PINGTUNG_', 'LINE_P', 1500),
                          'LINE_S': ('/south_link/SOUTHLINK_', 'LINE_S', 2000),
                          'LINE_T': ('/taitung/TAITUNG_', 'LINE_T', 2000),
-                         'LINE_N': ('/north_link/NORTHLINK_', 'LINE_N', 2000),
+                         'LINE_N': ('/north_link/NORTHLINK_', 'LINE_N', 1500),
                          'LINE_I': ('/yilan/YILAN_', 'LINE_I', 2000),
                          'LINE_PX': ('/pingxi/PINGXI_', 'LINE_PX', 1250),
                          'LINE_NW': ('/neiwan/NEIWAN_', 'LINE_NW', 1250),
+                         'LINE_LJ': ('/liujia/LIUJIA_', 'LINE_LJ', 500),
                          'LINE_J': ('/jiji/JIJI_', 'LINE_J', 1250),
                          'LINE_SL': ('/shalun/SHALUN_', 'LINE_SL', 650)}
-
-        # 處理所有營運路線的車站基本資訊(Stations.csv)
-        # with open('CSV/Stations.csv', newline='', encoding='utf8') as csvfile:
-
-        #     reader = csv.reader(csvfile)
-
-        #     for row in reader:
-        #         self.Stations.append(row)
+        
+        self.Folders = ['west_link_north', 'west_link_south', 'west_link_moutain', 'west_link_sea',
+                        'pingtung', 'south_link', 'taitung', 'north_link', 'yilan',
+                        'pingxi', 'neiwan', 'liujia', 'jiji', 'shalun']
 
         # 處理所有車站基本資訊(Route.csv)
         with open('CSV/Route.csv', newline='', encoding='utf8') as csvfile:
