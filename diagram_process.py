@@ -13,7 +13,7 @@ def draw(all_trains, location, date):
 
     offset = Globals.DiagramHours[0] * 600  # 將整個圖形往左移動的距離
 
-    diagrams = {}
+    diagrams = {} # 各營運線運行圖
 
     for key, value in Globals.LinesDiagramSetting.items():
         diagrams[key] = dm.Diagram(Globals.LinesStationsForBackground[key],

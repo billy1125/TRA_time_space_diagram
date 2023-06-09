@@ -16,9 +16,7 @@ class Diagram:
         self.width = width
         self.height = height
         self.diagram_hours = diagram_hours
-        self.stations_to_draw = stations_to_draw
-
-        # svg檔案描述、背景、基本大小基本設定
+        self.stations_to_draw = stations_to_draw        
         self.fileHandler = open(self.file_name, 'w', encoding='utf-8')
         self.fileHandler.write('<?xml version="1.0" encoding="utf-8" ?>')
         self.fileHandler.write(

@@ -1,6 +1,6 @@
 import sys
 import os
-import io
+# import io
 import shutil
 import time
 import queue
@@ -13,6 +13,7 @@ import progessbar as pb
 import environment_variable as ev
 
 Globals = ev.GlobalVariables()
+Spacetime = tps.SpaceTime()
 
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -24,19 +25,18 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
 
     _check_output_folder(argv_website_svg_location)
     
+    # 擷取台鐵JSON檔
     for root, dirs, files in os.walk(argv_json_location + '/'):
         for file in files:
             if file.split('.')[1] == 'json':
                 json_files_queue.put(file.split('.')[0])
 
     total = json_files_queue.qsize()
-    print("共有 {0} 個 JSON 檔案需要轉檔。\n".format(str(total)))
-
-    Spacetime = tps.SpaceTime()
+    print("共有 {0} 個 JSON 檔案需要轉檔。\n".format(str(total)))   
 
     if total != 0:
         while not json_files_queue.empty():            
-            try:
+            # try:
                 file_date = json_files_queue.get()
                 print("目前進行日期「{0}」轉檔。\n".format(file_date))            
                 
@@ -55,10 +55,11 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                 count = 0
                 total = len(all_trains_json)
 
+                # 逐一將每一個車次進行資料轉換
                 for train in all_trains_json:
 
                     train_data = Spacetime.CalculateSpaceTime(train)
-                    all_trains_data.append(tuple(train_data[0]))
+                    all_trains_data.append(train_data[0])
                     all_after_midnight_data.append(train_data[1])
                     count += 1
                     pb.progress(count, total, "目前已處理車次：{0}".format(train['Train']))
@@ -70,9 +71,9 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                     if os.path.exists('JSON/' + file_name):
                         shutil.move('JSON/' + file_name, 'JSON_BACKUP/' + file_name)
 
-            except Exception as e:
-                print("\n發生了一個錯誤：在第 {0} 車次出問題，可能問題是 {1}".format(train['Train'], str(e)))
-            finally:
+            # except Exception as e:
+            #     print("\n發生了一個錯誤：在第 {0} 車次出問題，可能問題是 {1}".format(train['Train'], str(e)))
+            # finally:
                 end = time.time()
                 print("\n工作完成！轉換時間共 {0} 秒\n".format(str(round(end - start, 2))))
 
@@ -80,9 +81,6 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
         print('無法執行！沒有 JSON 檔案，請在 JSON 資料夾中置入台鐵的時刻表 JSON。\n')
 
 def _check_output_folder(path):
-    folders = ['west_link_north', 'west_link_south', 'west_link_moutain', 'west_link_sea',
-               'pingtung', 'south_link', 'taitung', 'north_link', 'yilan',
-               'pingxi', 'neiwan', 'liujia', 'jiji', 'shalun']
 
     output_folder = os.listdir(path)
 
