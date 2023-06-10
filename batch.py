@@ -58,8 +58,8 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                 # 逐一將每一個車次進行資料轉換
                 for train in all_trains_json:
                     train_data = Spacetime.CalculateSpaceTime(train)
-                    all_trains_data.append(train_data[0])
-                    all_after_midnight_data.append(train_data[1])
+                    all_trains_data.append(train_data['Train_Data'])
+                    all_after_midnight_data.append(train_data['After_midnight_Data'])
                     count += 1
                     pb.progress(count, total, "目前已處理車次：{0}".format(train['Train']))
 

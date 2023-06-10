@@ -116,19 +116,19 @@ class Diagram:
                     self._add_text(str(5 + i * 1200), str(y - 5), value['DSC'], "#c2c2a3", None, None)
 
     # 繪製線條
-    def draw_line(self, train_id, path, text_position, color, option_id = None):
+    def draw_line(self, train_id, path, text_position, color):
 
-        if option_id is None:
-            line_id = train_id
-        elif option_id is not None:
-            line_id = "{0}_{1}".format(train_id, option_id)
+        # if option_id is None:
+        #     line_id = train_id
+        # elif option_id is not None:
+        #     line_id = "{0}-{1}".format(train_id, option_id)
 
         if path != 'M':  # 避免無資料
-            self._add_path(path, line_id, None, color, None)
+            self._add_path(path, train_id, None, color, None)
             for item in text_position:
-                self._add_path_text(line_id, train_id, color, str(item))
+                self._add_path_text(train_id, train_id, color, str(item))
             # for i in range(0, 5):
-            #     self._add_path_text(line_id, train_id, color, str(20 * i) + "%")
+            #     self._add_path_text(train_id, train_id, color, str(20 * i) + "%")
 
     # 存檔
     def save_file(self):
