@@ -1,5 +1,5 @@
 import json
-from collections import namedtuple
+# from collections import namedtuple
 
 # 讀取台鐵JSON
 def read_json(filename):

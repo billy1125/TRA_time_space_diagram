@@ -4,6 +4,7 @@
 import time
 import environment_variable as ev
 
+# 公用參數
 Globals = ev.GlobalVariables()
 
 class Diagram:
@@ -68,13 +69,13 @@ class Diagram:
     def _draw_background(self):
         localtime = time.asctime(time.localtime(time.time()))
 
-        self._add_text("5", "20", Globals.LineDescription[self.line] + ' 日期：' + self.date +'，運行圖均來自台鐵公開資料所分析，僅供參考，正確資料與實際運轉狀況請以台鐵網站或公告為主。台鐵JSON Open Data轉檔運行圖程式版本：' + Globals.Version + ' 轉檔時間：' + localtime, "#000000", None, None)
-
+        self._add_text("5", "20",
+                       '{0} 日期：{1}，運行圖均來自台鐵公開資料所分析，僅供參考，正確資料與實際運轉狀況請以台鐵網站或公告為主。台鐵JSON Open Data轉檔運行圖程式版本：{2} 轉檔時間：{3}'.format(Globals.OperationLines[self.line]['NAME'], self.date, Globals.Version, localtime),
+                       "#000000", None, None)
         # 時間線
         hours = self.diagram_hours
         text_spacing_factor = 500
-        if self.height <= 1500:  # 較小的運行圖高度，小時顯示的間距設定較窄
-            text_location_factor = 250
+
         # 小時
         for i in range(0, len(hours)):
             x = 50 + i * 1200
@@ -102,17 +103,17 @@ class Diagram:
                                 self._add_text(str(x), str(49 + y), str(j + 1) + "0", "#5c5c3d", None, None)
 
         # 車站線
-        for LineName, StationNumber, StationName, StationLoc in self.stations_to_draw:
-            y = float(StationLoc) + 50
-            if StationNumber != 'NA':
+        for key, value in self.stations_to_draw.items():
+            y = float(value['SVGYAXIS']) + 50
+            if key != 'NA':
                 self._add_line("50", str(y), str(self.width - 50), str(y), None, "station_line")
             else:
                 self._add_line("50", str(y), str(self.width - 50), str(y), None, "station_noserv_line")
             for i in range(0, 31):
-                if StationNumber != 'NA':
-                    self._add_text(str(5 + i * 1200), str(y - 5), StationName, "#000000", None, None)
+                if key != 'NA':
+                    self._add_text(str(5 + i * 1200), str(y - 5), value['DSC'], "#000000", None, None)
                 else:
-                    self._add_text(str(5 + i * 1200), str(y - 5), StationName, "#c2c2a3", None, None)
+                    self._add_text(str(5 + i * 1200), str(y - 5), value['DSC'], "#c2c2a3", None, None)
 
     # 繪製線條
     def draw_line(self, train_id, path, text_position, color, option_id = None):
@@ -120,7 +121,7 @@ class Diagram:
         if option_id is None:
             line_id = train_id
         elif option_id is not None:
-            line_id = train_id + "_" + option_id
+            line_id = "{0}_{1}".format(train_id, option_id)
 
         if path != 'M':  # 避免無資料
             self._add_path(path, line_id, None, color, None)
@@ -135,5 +136,5 @@ class Diagram:
         self.fileHandler.write('</svg>')
         self.fileHandler.close()
 
-        return Globals.LineDescription[self.line] + ' 日期：' + self.date + ' 運行圖繪製完成 \n'
+        return '{0} 日期：{1} 運行圖繪製完成 \n'.format(Globals.OperationLines[self.line]['NAME'], self.date)
     

@@ -5,7 +5,7 @@
 |專案名稱|TRA_time_space_diagram|
 |Author|呂卓勳 Cho-Hsun Lu|
 |E-mail|billy1125@gmail.com|
-|版本|1.3.6|
+|版本|1.3.7|
 
 ## 緣起
 

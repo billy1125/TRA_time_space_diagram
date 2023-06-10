@@ -1,3 +1,5 @@
+# 主程式
+
 import sys
 import os
 # import io
@@ -12,6 +14,7 @@ import diagram_process as dp
 import progessbar as pb 
 import environment_variable as ev
 
+# 公用參數
 Globals = ev.GlobalVariables()
 Spacetime = tps.SpaceTime()
 
@@ -20,12 +23,11 @@ Spacetime = tps.SpaceTime()
 # 程式執行段
 def main (argv_json_location, argv_website_svg_location, argv_select_trains, move_file):
 
-    all_after_midnight_data = []
-    json_files_queue = queue.Queue()
-
     _check_output_folder(argv_website_svg_location)
     
     # 擷取台鐵JSON檔
+    json_files_queue = queue.Queue()
+
     for root, dirs, files in os.walk(argv_json_location + '/'):
         for file in files:
             if file.split('.')[1] == 'json':
@@ -36,28 +38,25 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
 
     if total != 0:
         while not json_files_queue.empty():            
-            # try:
+            try:
+                start = time.time() 
                 file_date = json_files_queue.get()
                 print("目前進行日期「{0}」轉檔。\n".format(file_date))            
                 
                 file_name = file_date + ".json"
-                start = time.time()            
-
                 all_trains_json = rtj.find_trains(rtj.read_json(file_name), argv_select_trains)  # 讀取 JSON 檔案，可選擇特定車次(argv_select_trains)         
+                
+                count = 0
                 all_trains_data = [] 
+                all_after_midnight_data = []
+                total = len(all_trains_json)
 
                 # 上一個檔案的跨午夜車次，放到下一個檔案中繪製
                 for item in all_after_midnight_data:
                     all_trains_data.append(item)
 
-                all_after_midnight_data = []
-
-                count = 0
-                total = len(all_trains_json)
-
                 # 逐一將每一個車次進行資料轉換
                 for train in all_trains_json:
-
                     train_data = Spacetime.CalculateSpaceTime(train)
                     all_trains_data.append(train_data[0])
                     all_after_midnight_data.append(train_data[1])
@@ -71,20 +70,23 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                     if os.path.exists('JSON/' + file_name):
                         shutil.move('JSON/' + file_name, 'JSON_BACKUP/' + file_name)
 
-            # except Exception as e:
-            #     print("\n發生了一個錯誤：在第 {0} 車次出問題，可能問題是 {1}".format(train['Train'], str(e)))
-            # finally:
+            except Exception as e:
+                print("\n發生了一個錯誤：在第 {0} 車次出問題，可能問題是 {1}".format(train['Train'], str(e)))
+            finally:
                 end = time.time()
                 print("\n工作完成！轉換時間共 {0} 秒\n".format(str(round(end - start, 2))))
 
     else:
         print('無法執行！沒有 JSON 檔案，請在 JSON 資料夾中置入台鐵的時刻表 JSON。\n')
 
+# 確認運行圖繪製完成的存放的資料夾
 def _check_output_folder(path):
-
     output_folder = os.listdir(path)
+    default_folders = []
 
-    diff = list(set(Globals.Folders).difference(set(output_folder)))
+    for value in Globals.OperationLines.values():
+        default_folders.append(value['FOLDER'])
+    diff = list(set(default_folders).difference(set(output_folder)))
 
     if len(diff) > 0:
         for item in diff:
@@ -103,8 +105,8 @@ if __name__ == "__main__":
         Parameters.append(sys.argv[3])
         Parameters.append(True)
     else:
-        Parameters.append('JSON')
-        Parameters.append('OUTPUT')
+        Parameters.append(Globals.JsonFolder)
+        Parameters.append(Globals.OutputFolder)
 
         action = input('請選擇轉檔方式，直接轉檔請直接按Enter鍵，需要轉檔特定車次請輸入「Y」再進行選擇，離開請按「N」：')
         if action.lower() == 'y':

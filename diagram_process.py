@@ -6,6 +6,7 @@ import queue
 import environment_variable as ev
 import diagram as dm
 
+# 公用參數
 Globals = ev.GlobalVariables()
 
 # 繪製各路線的車次線
@@ -15,13 +16,13 @@ def draw(all_trains, location, date):
 
     diagrams = {} # 各營運線運行圖
 
-    for key, value in Globals.LinesDiagramSetting.items():
+    for key, value in Globals.OperationLines.items():
         diagrams[key] = dm.Diagram(Globals.LinesStationsForBackground[key],
-                                    location + value[0],
+                                    "{0}/{1}/{2}".format(location, value['FOLDER'], value['PREFIX']),
                                     date,
-                                    value[1],
+                                    key,
                                     1200 * (len(Globals.DiagramHours) - 1) + 100,
-                                    value[2],
+                                    int(value["MAX_X_AXIS"]),
                                     Globals.DiagramHours)
 
     for train in all_trains:
@@ -62,7 +63,7 @@ def set_train_path(line_kind, train_id, car_class, offset, option_id, train_time
             coordinates = queue.Queue()  # 用來置放每一個轉折點的座標值
             path = "M"
             for item_index, row in item.iterrows():        
-                if row['StopStation'] != -1 or Globals.LinesStations[line_kind][row['StationID']][2] == "Y":
+                if row['StopStation'] != -1 or Globals.LinesStationsForBackground[line_kind][row['StationID']]['TERMINAL'] == "Y":
                     x = round(row['Time'] * 10 + 50 - offset, 4)
                     y = round(row['Loc'] + 50, 4)
                     path += str(x) + ',' + str(y) + ' '

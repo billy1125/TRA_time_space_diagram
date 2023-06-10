@@ -8,6 +8,7 @@ import numpy as np
 # 自訂class與module
 import environment_variable as ev
 
+# 公用參數
 Globals = ev.GlobalVariables()
 Route = Globals.Route                   # 列車路徑基本資料
 SVG_X_Axis = Globals.SVG_X_Axis         # 時間空間基本資料
@@ -102,71 +103,71 @@ class SpaceTime:
 
         while True:
 
-            temp.append([Route[station][0], Route[station][1], Route[station][3], km])
+            temp.append([Route[station]['ID'], Route[station]['DSC'], Route[station]['KM'], km])
 
             if line_dir == '2':  # 逆行
 
                 if cheng_zhui == False:
-                    branch = Route[station][6]
+                    branch = Route[station]['CCW_BRANCH']
                     if branch != '':
                         if station == '7360':  # 平溪深澳線處理，瑞芳判斷
                             if end_station == '7362':
-                                km += float(Route[station][12])
+                                km += float(Route[station]['CCW_BRANCH_KM'])
                                 station = '7361'  # 指定到海科館站
                             elif end_station != '7362':
-                                km += float(Route[station][10])
-                                station = Route[station][4]
+                                km += float(Route[station]['CCW_KM'])
+                                station = Route[station]['CCW']
                         elif station == '3430':  # 集集線處理，二水判斷
                             if jiji == True:
-                                km += float(Route[station][12])
+                                km += float(Route[station]['CCW_BRANCH_KM'])
                                 station = '3431'
                             elif jiji == False:
-                                km += float(Route[station][10])
-                                station = Route[station][4]
+                                km += float(Route[station]['CCW_KM'])
+                                station = Route[station]['CCW']
                         elif station == '4270':  # 沙崙線處理，中洲判斷
                             if shalun == True:
-                                km += float(Route[station][12])
+                                km += float(Route[station]['CCW_BRANCH_KM'])
                                 station = '4271'
                             elif shalun == False:
-                                km += float(Route[station][10])
-                                station = Route[station][4]
+                                km += float(Route[station]['CCW_KM'])
+                                station = Route[station]['CCW']
                         else:
                             # 山海線判斷
                             if line in ['1', '0']:  # 山線與其他
-                                km += float(Route[station][10])
-                                station = Route[station][4]
+                                km += float(Route[station]['CCW_KM'])
+                                station = Route[station]['CCW']
                             elif line == '2':  # 海線
-                                km += float(Route[station][12])
-                                station = Route[station][6]
+                                km += float(Route[station]['CCW_BRANCH_KM'])
+                                station = Route[station]['CCW_BRANCH']
                     else:
-                        km += float(Route[station][10])
-                        station = Route[station][4]
+                        km += float(Route[station]['CCW_KM'])
+                        station = Route[station]['CCW']
                 else:  # 成追線
-                    km += float(Route[station][14])
-                    station = Route[station][8]
+                    km += float(Route[station]['CHENG_ZHUI_CCW_KM'])
+                    station = Route[station]['CHENG_ZHUI_CCW']
 
             elif line_dir == '1':  # 順行
 
                 if cheng_zhui == False:
-                    branch = Route[station][7]
+                    branch = Route[station]['CW_BRANCH']
                     if branch != '':
                         if station == '0920':  # 八堵判斷
                             if end_station != '0900':  # 終點站非基隆的車次下一車站直接指定為暖暖
-                                km += float(Route[station][13])
-                                station = Route[station][7]
+                                km += float(Route[station]['CW_BRANCH_KM'])
+                                station = Route[station]['CW_BRANCH']
                             elif end_station == '0900':  # 終點站為基隆的車次
-                                km += float(Route[station][11])
-                                station = Route[station][5]
+                                km += float(Route[station]['CW_KM'])
+                                station = Route[station]['CW']
                         elif station == '7130':  # 蘇澳新判斷
                             if end_station == '7120':  # 終點站為蘇澳
-                                km += float(Route[station][13])
+                                km += float(Route[station]['CW_BRANCH_KM'])
                                 station = '7120'
                             elif end_station != '7120':  # 終點站非蘇澳的車次下一車站直接指定為永樂
-                                km += float(Route[station][11])
+                                km += float(Route[station]['CW_KM'])
                                 station = '7110'
                         elif station in ['1190', '1193']:  # 內灣六家線處理，北新竹與竹中判斷
                             if neiwan == True:  # 終點站為六家或內灣
-                                km += float(Route[station][13])
+                                km += float(Route[station]['CW_BRANCH_KM'])
                                 if station == '1190':
                                     station = '1191'
                                 elif station == '1193':
@@ -175,36 +176,36 @@ class SpaceTime:
                                     elif end_station == '1194':
                                         station = '1194'
                             elif neiwan == False:  # 終點站非六家或內灣的車次下一車站直接指定為竹北
-                                km += float(Route[station][11])
+                                km += float(Route[station]['CW_KM'])
                                 station = '1180'
                         elif station == '7330':  # 平溪深澳線處理，三貂嶺判斷
                             if pingxi == True:
-                                km += float(Route[station][13])
+                                km += float(Route[station]['CW_BRANCH_KM'])
                                 station = '7331'
                             elif pingxi == False:  # 終點站非平溪深澳線的車次下一車站直接指定為牡丹
-                                km += float(Route[station][11])
+                                km += float(Route[station]['CW_KM'])
                                 station = '7320'
                         else:  # 山海線判斷
                             if line in ['1', '0']:  # 山線或其他
-                                km += float(Route[station][11])
-                                station = Route[station][5]
+                                km += float(Route[station]['CW_KM'])
+                                station = Route[station]['CW']
                             elif line == '2':  # 海線
-                                km += float(Route[station][13])
-                                station = Route[station][7]
+                                km += float(Route[station]['CW_BRANCH_KM'])
+                                station = Route[station]['CW_BRANCH']
                     else:
                         # if station != '2214':
-                        km += float(Route[station][11])
-                        station = Route[station][5]
+                        km += float(Route[station]['CW_KM'])
+                        station = Route[station]['CW']
                 else:  # 成追線
-                    km += float(Route[station][15])
-                    station = Route[station][9]
+                    km += float(Route[station]['CHENG_ZHUI_CW_KM'])
+                    station = Route[station]['CHENG_ZHUI_CW']
 
             if station == end_station:
                 if roundabout_train == True:
-                    temp.append(['1001', Route[station][1], Route[station][3], km])
+                    temp.append(['1001', Route[station]['DSC'], Route[station]['KM'], km])
                     break
                 else:
-                    temp.append([Route[station][0], Route[station][1], Route[station][3], km])
+                    temp.append([Route[station]['ID'], Route[station]['DSC'], Route[station]['KM'], km])
                     break
 
             if len(temp) > 200:
@@ -311,7 +312,7 @@ class SpaceTime:
                     operation_lines[key][0].append(row['Station'])
                     operation_lines[key][1].append(row['StationID'])
                     operation_lines[key][2].append(row['Time'])
-                    operation_lines[key][3].append(float(value[row['StationID']][0]))
+                    operation_lines[key][3].append(float(value[row['StationID']]['SVGYAXIS']))
                     operation_lines[key][4].append(row['StopStation'])
                     operation_lines[key][5].append(stop_order)
             stop_order += 1
