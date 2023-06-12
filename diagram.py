@@ -80,11 +80,13 @@ class Diagram:
         for i in range(0, len(hours)):
             x = 50 + i * 1200
             self._add_line(str(x), "50", str(x), str(self.height + 50), None, "hour_line")
-
-            for j in range(0, 21):
-                y = j * text_spacing_factor
+            y = 0
+            while True:               
                 if y <= self.height:
                     self._add_text(str(x), str(49 + y), '{:0>2d}'.format(hours[i]) + '00', "#2e2e1f")
+                else:
+                    break
+                y += text_spacing_factor
 
             if i != len(hours) - 1:  # 每10分鐘
                 for j in range(0, 5):
@@ -93,14 +95,16 @@ class Diagram:
                         self._add_line(str(x), "50", str(x), str(self.height + 50), None, "min10_line")
                     else:  # 30分鐘顏色不同
                         self._add_line(str(x), "50", str(x), str(self.height + 50), None, "min30_line")
-
-                    for k in range(0, 21):
-                        y = k * text_spacing_factor
+                    y = 0
+                    while True:                               
                         if y <= self.height:
                             if j != 2:
                                 self._add_text(str(x), str(49 + y), str(j + 1) + "0", "#adad85", None, None)
                             else:
                                 self._add_text(str(x), str(49 + y), str(j + 1) + "0", "#5c5c3d", None, None)
+                        else:
+                            break
+                        y += text_spacing_factor
 
         # 車站線
         for key, value in self.stations_to_draw.items():
