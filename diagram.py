@@ -75,15 +75,24 @@ class Diagram:
         # 時間線
         hours = self.diagram_hours
         text_spacing_factor = 500
+        # after_midnight = ""
 
         # 小時
         for i in range(0, len(hours)):
-            x = 50 + i * 1200
-            self._add_line(str(x), "50", str(x), str(self.height + 50), None, "hour_line")
+            x = 50 + i * 1200            
             y = 0
-            while True:               
+            self._add_line(str(x), "50", str(x), str(self.height + 50), None, "hour_line")
+
+            while True:     
+                if (hours[i] == 24):
+                    after_midnight = "隔日"
+                    css = "hour_midnight"
+                else:
+                    after_midnight = ""
+                    css = "hour"
+
                 if y <= self.height:
-                    self._add_text(str(x), str(49 + y), '{:0>2d}'.format(hours[i]) + '00', "#2e2e1f")
+                    self._add_text(str(x), str(49 + y), "{0:0>2d}00 {1}".format(hours[i], after_midnight), None, css)
                 else:
                     break
                 y += text_spacing_factor
@@ -99,9 +108,9 @@ class Diagram:
                     while True:                               
                         if y <= self.height:
                             if j != 2:
-                                self._add_text(str(x), str(49 + y), str(j + 1) + "0", "#adad85", None, None)
+                                self._add_text(str(x), str(49 + y), str(j + 1) + "0", None, "min10", None)
                             else:
-                                self._add_text(str(x), str(49 + y), str(j + 1) + "0", "#5c5c3d", None, None)
+                                self._add_text(str(x), str(49 + y), str(j + 1) + "0", None, "min30", None)
                         else:
                             break
                         y += text_spacing_factor

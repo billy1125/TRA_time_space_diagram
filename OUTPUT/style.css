@@ -1,13 +1,31 @@
 line {
     stroke-width:0.3;    
+    font-weight: 100;
+}
+
+.hour {
+    fill:#2e2e1f;
+}
+
+.hour_midnight {
+    fill:#ff0000;
+    font-weight: bold;
 }
 
 .hour_line {
     stroke:#000000;
 }
 
+.min10 {
+    fill:#adad85;
+}
+
 .min10_line {
     stroke:#a18cfc;
+}
+
+.min30 {
+    fill:#5c5c3d;
 }
 
 .min30_line {

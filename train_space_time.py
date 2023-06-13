@@ -41,11 +41,11 @@ class SpaceTime:
 
         # 將車次的各營運線資料整理好之後，增加到trains_data清單中
         for key, value in operation_lines['Operation_Lines'].items():
-            trains_data.append([key, train_id, car_class, line, None, value])
+            trains_data.append([key, train_id, car_class, line, value])
 
         # 將車次跨午夜的各營運線資料整理好之後，增加到after_midnight_data清單中
-        for key, value in operation_lines['After_Midnight_Train'].items():
-            after_midnight_data.append([key, train_id, car_class, line, True, value])
+        # for key, value in operation_lines['After_Midnight_Train'].items():
+        #     after_midnight_data.append([key, train_id, car_class, line, True, value])
 
         return {"Train_Data" :trains_data, "After_midnight_Data": after_midnight_data}
 
@@ -338,19 +338,19 @@ class SpaceTime:
             _operation_lines.pop(item)
 
         # 跨午夜車次處理：首先插入一個虛擬跨午夜車站，推算運行圖SVG Y軸數值，再獨立午夜後的運行資料存入after_midnight_train
-        for key, value in _operation_lines.items():
-            index_label = value.query('Time >= 2880').index.tolist()
-            if len(index_label) >= 2:
-                row_value = ['跨午夜', "-1", 2880, np.NaN, "Y", value.loc[index_label[0], 'StopOrder'] - 1]
-                df = self._insert_row(index_label[0], value, row_value)  # 插入一個虛擬的跨午夜車站
+        # for key, value in _operation_lines.items():
+        #     index_label = value.query('Time >= 2880').index.tolist()
+        #     if len(index_label) >= 2:
+        #         row_value = ['跨午夜', "-1", 2880, np.NaN, "Y", value.loc[index_label[0], 'StopOrder'] - 1]
+        #         df = self._insert_row(index_label[0], value, row_value)  # 插入一個虛擬的跨午夜車站
 
-                df = df.set_index('Time').interpolate(method='index')  # 依據時間估計跨午夜的位置
-                df = df.reset_index()
+        #         df = df.set_index('Time').interpolate(method='index')  # 依據時間估計跨午夜的位置
+        #         df = df.reset_index()
 
-                df_after_midnight_train = df[index_label[0]:].copy()
-                df_after_midnight_train.loc[:, 'Time'] = df_after_midnight_train.loc[:, 'Time'].apply(lambda x : x - 2880) # 每一個時間資料都減2880
+        #         df_after_midnight_train = df[index_label[0]:].copy()
+        #         df_after_midnight_train.loc[:, 'Time'] = df_after_midnight_train.loc[:, 'Time'].apply(lambda x : x - 2880) # 每一個時間資料都減2880
 
-                _after_midnight_train[key] = df_after_midnight_train
+        #         _after_midnight_train[key] = df_after_midnight_train
 
         return {"Operation_Lines": _operation_lines, "After_Midnight_Train": _after_midnight_train}  # 本日車次運行資料, 跨午夜車次午夜後的運行資料
 

@@ -23,8 +23,8 @@ def draw(all_trains, location, date):
                                     Globals.DiagramHours)
 
     for train in all_trains:
-        for line_kind, train_id, car_class, line_dir, is_midnight, train_time_space in train:
-            set_train_path(line_kind, train_id, car_class, is_midnight, train_time_space, diagrams)
+        for line_kind, train_id, car_class, line_dir, train_time_space in train:
+            set_train_path(line_kind, train_id, car_class, train_time_space, diagrams)
 
     for key, value in diagrams.items():
         value.save_file()
@@ -44,7 +44,7 @@ def check_undiscontinuous_order(train_time_space):
         i += 1
 
 # 車次線路徑與車次號標註
-def set_train_path(line_kind, train_id, car_class, is_midnight, train_time_space, diagrams):
+def set_train_path(line_kind, train_id, car_class, train_time_space, diagrams):
 
     color = Globals.CarKind.get(car_class, 'special')
     # svg線條資訊，藉由每一個要通過時間與地點建立svg座標值
@@ -61,7 +61,7 @@ def set_train_path(line_kind, train_id, car_class, is_midnight, train_time_space
             path = "M"
             for item_index, row in item.iterrows():        
                 if row['StopStation'] != -1 or Globals.LinesStationsForBackground[line_kind][row['StationID']]['TERMINAL'] == "Y":
-                    x = round(row['Time'] * 10 + 50, 4)
+                    x = round(row['Time'] * 10 - 1200 * Globals.DiagramHours[0] + 50, 4)
                     y = round(row['Loc'] + 50, 4)
                     path += str(x) + ',' + str(y) + ' '
                     coordinates.put((x, y)) 
@@ -110,8 +110,8 @@ def set_train_path(line_kind, train_id, car_class, is_midnight, train_time_space
 
             # 列車號標示的處理
             if index == 1:
-                train_id = "{0}-{1}".format(train_id, "接續")
-            if is_midnight == True:
-                train_id = "{0}-{1}".format(train_id, "跨午夜")
+                train_id = "{0}-{1}".format(train_id, "環島")
+            # if is_midnight == True:
+            #     train_id = "{0}-{1}".format(train_id, "跨午夜")
 
             diagrams[line_kind].draw_line(train_id, path, text_position, color)

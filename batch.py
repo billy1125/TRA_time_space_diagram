@@ -24,6 +24,7 @@ Spacetime = tps.SpaceTime()
 def main (argv_json_location, argv_website_svg_location, argv_select_trains, move_file):
 
     _check_output_folder(argv_website_svg_location)
+    all_after_midnight_data = []
     
     # 擷取台鐵JSON檔
     json_files_queue = queue.Queue()
@@ -47,19 +48,20 @@ def main (argv_json_location, argv_website_svg_location, argv_select_trains, mov
                 all_trains_json = rtj.find_trains(rtj.read_json(file_name), argv_select_trains)  # 讀取 JSON 檔案，可選擇特定車次(argv_select_trains)         
                 
                 count = 0
-                all_trains_data = [] 
-                all_after_midnight_data = []
+                all_trains_data = []                 
                 total = len(all_trains_json)
 
                 # 上一個檔案的跨午夜車次，放到下一個檔案中繪製
-                for item in all_after_midnight_data:
-                    all_trains_data.append(item)
+                # for item in all_after_midnight_data:
+                #     all_trains_data.append(item)
+
+                # all_after_midnight_data = []
 
                 # 逐一將每一個車次進行資料轉換
                 for train in all_trains_json:
                     train_data = Spacetime.CalculateSpaceTime(train)
                     all_trains_data.append(train_data['Train_Data'])
-                    all_after_midnight_data.append(train_data['After_midnight_Data'])
+                    # all_after_midnight_data.append(train_data['After_midnight_Data'])
                     count += 1
                     pb.progress(count, total, "目前已處理車次：{0}".format(train['Train']))
 

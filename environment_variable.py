@@ -12,7 +12,7 @@ class GlobalVariables:
         self.Version = "1.3.7"                # 版本號
         self.JsonFolder = "JSON"              # 台鐵時刻表JSON預設置放資料夾
         self.OutputFolder = "OUTPUT"          # 運行圖檔案預設匯出目標資料夾
-        self.DiagramHours = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 1, 2, 3, 4, 5, 6) # 一天每一小時的文字清單
+        self.DiagramHours = (4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 1, 2, 3, 4, 5, 6) # 一天每一小時的文字清單
  
         self.OperationLines = {}              # 各營運路線的基本資料(OperationLines.csv)，用於名稱顯示、轉檔後資料夾設定、運行圖大小設定等
         self.CarKind = {}                     # 車種代碼轉換成CSS用的標籤(CarKind.csv)
