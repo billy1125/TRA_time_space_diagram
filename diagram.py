@@ -62,7 +62,7 @@ class Diagram:
             self.fileHandler.write( '<path d="' + pathList + '" id="' + lineId + emphasisStr )
 
     def _add_path_text(self, _line_id, _train_id, _class, _startOffset):
-        self.fileHandler.write( '<text><textPath class = "' + _class + '" startOffset = "' + _startOffset + '" xlink:href = "#' +
+        self.fileHandler.write( '<text><textPath class = "' + _class + '" startOffset = "' + _startOffset + '" href = "#' +
                                 _line_id + '"><tspan dy="-3" font-size="80%">' + _train_id + '</tspan></textPath></text>' )
 
     # 繪製基底圖
