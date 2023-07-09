@@ -55,12 +55,18 @@ def set_train_path(line_kind, train_id, car_class, train_time_space, diagrams):
         train_time_space_slices.append(train_time_space.iloc[:undiscontinuous_order_number + 1, :])
         train_time_space_slices.append(train_time_space.iloc[undiscontinuous_order_number + 1:, :])
 
+    # 找出運行圖中必須標註的車站清單
+    diagram_need_stop = []
+    for item in Globals.LinesStationsForBackground[line_kind]:
+        if (item['TERMINAL'] == 'Y'):
+            diagram_need_stop.append(item['ID'])
+
     for index, item in enumerate(train_time_space_slices):    
         if item.shape[0] > 2:
             coordinates = queue.Queue()  # 用來置放每一個轉折點的座標值
             path = "M"
             for item_index, row in item.iterrows():        
-                if row['StopStation'] != -1 or Globals.LinesStationsForBackground[line_kind][row['StationID']]['TERMINAL'] == "Y":
+                if row['StopStation'] != -1 or row['StationID'] in diagram_need_stop:
                     x = round(row['Time'] * 10 - 1200 * Globals.DiagramHours[0] + 50, 4)
                     y = round(row['Loc'] + 50, 4)
                     path += str(x) + ',' + str(y) + ' '

@@ -116,17 +116,17 @@ class Diagram:
                         y += text_spacing_factor
 
         # 車站線
-        for key, value in self.stations_to_draw.items():
-            y = float(value['SVGYAXIS']) + 50
-            if key != 'NA':
+        for item in self.stations_to_draw:
+            y = float(item['SVGYAXIS']) + 50
+            if item['ID'] != 'NA':
                 self._add_line("50", str(y), str(self.width - 50), str(y), None, "station_line")
             else:
                 self._add_line("50", str(y), str(self.width - 50), str(y), None, "station_noserv_line")
             for i in range(0, 31):
-                if key != 'NA':
-                    self._add_text(str(5 + i * 1200), str(y - 5), value['DSC'], "#000000", None, None)
+                if item['ID']  != 'NA':
+                    self._add_text(str(5 + i * 1200), str(y - 5), item['DSC'], "#000000", None, None)
                 else:
-                    self._add_text(str(5 + i * 1200), str(y - 5), value['DSC'], "#c2c2a3", None, None)
+                    self._add_text(str(5 + i * 1200), str(y - 5), item['DSC'], "#c2c2a3", None, None)
 
     # 繪製線條
     def draw_line(self, train_id, path, text_position, color):

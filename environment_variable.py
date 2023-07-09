@@ -52,13 +52,13 @@ class GlobalVariables:
 
             for key, value in self.OperationLines.items():
                 stations_loc = {}
-                stations_loc_for_background = {}
+                stations_loc_for_background = []
 
                 for kind, id, dsc, svgyaxis, terminal in list_csv:
                     if key == kind:
                         if id != 'NA':
                             stations_loc[id] = {'DSC': dsc, 'SVGYAXIS': svgyaxis}
-                        stations_loc_for_background[id] = {'DSC': dsc, 'SVGYAXIS': svgyaxis, 'TERMINAL': terminal}
+                        stations_loc_for_background.append({'ID': id, 'DSC': dsc, 'SVGYAXIS': svgyaxis, 'TERMINAL': terminal})
 
                     self.LinesStations[key] = stations_loc
                     self.LinesStationsForBackground[key] = stations_loc_for_background

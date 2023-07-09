@@ -291,6 +291,7 @@ class SpaceTime:
 
         # select_df.set_index('Loc', inplace=True)
         # select_df.interpolate(method='index' , inplace=True)
+        #  計算沒有時間的通過車站插補資料，計算插補資料的原因主要是為了各路線端點車站可能列車會直接通過，譬如北迴線有的列車會直接通過蘇澳新，必須要計算出大致的通過時間
         _df_estimate_time_space.interpolate(method='linear' , inplace=True)
         _df_estimate_time_space.reset_index()
 

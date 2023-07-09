@@ -1,95 +1,202 @@
 line {
-    stroke-width:0.3;    
-    font-weight: 100;
+    stroke-width: .3;
+    font-weight: 100
+}
+
+svg {
+    font-family: Tahoma, Verdana, sans-serif;
+    font-size: 14px
 }
 
 .hour {
-    fill:#2e2e1f;
-}
-
-.hour_midnight {
-    fill:#ff0000;
-    font-weight: bold;
-}
-
-.hour_line {
-    stroke:#000000;
-}
-
-.min10 {
-    fill:#adad85;
-}
-
-.min10_line {
-    stroke:#a18cfc;
-}
-
-.min30 {
-    fill:#5c5c3d;
-}
-
-.min30_line {
-    stroke:#0105e0;
-}
-
-.station_line {
-    stroke:#000000;
-}
-
-.station_noserv_line {
-    stroke:#bfbfbf;
+    fill: #2e2e1f
 }
 
 path {
-	stroke-linecap: round;
-    stroke-width:2.5;
-    fill:none
+    transition-property: stroke-width;
+    transition-duration: 1s;
+    transition-timing-function: ease-out;
+    transition-delay: 0s;
+    stroke-linecap: round;
+    stroke-width: 2.5;
+    fill: none
+}
+
+path:hover {
+    stroke-width: 6
+}
+
+path:focus {
+    stroke-width: 6
+}
+
+.hour_midnight {
+    fill: red;
+    font-weight: 700
+}
+
+.hour_line {
+    stroke: #000
+}
+
+.min10 {
+    fill: #adad85
+}
+
+.min10_line {
+    stroke: #a18cfc
+}
+
+.min30 {
+    fill: #5c5c3d
+}
+
+.min30_line {
+    stroke: #0105e0
+}
+
+.now_time_line {
+    stroke: #ff0000;
+    stroke-width: 1.5;
+    stroke-dasharray: 6, 1;
+}
+
+.station {
+    fill: #000
+}
+
+.station_line {
+    stroke: #000
+}
+
+.station_noserv {
+    fill: #bfbfbf
+}
+
+.station_noserv_line {
+    stroke: #bfbfbf
 }
 
 .taroko {
-    stroke:#20b2aa;
+    stroke: #20b2aa
 }
 
 .puyuma {
-    stroke:#ff0000;
+    stroke: red
 }
 
 .tze_chiang {
-    stroke:#ffa500;
+    stroke: orange
 }
 
 .tze_chiang_diesel {
-    stroke:#ffd700;
+    stroke: gold
 }
 
-.emu1200{
-    stroke:#ff008c;
+.emu1200 {
+    stroke: #ff008c
 }
 
-.emu300{
-    stroke:#ff4444;
+.emu300 {
+    stroke: #f44
 }
 
-.emu3000{
-    stroke:#000000;
+.emu3000 {
+    stroke: #000
 }
 
 .chu_kuang {
-    stroke:#FAAB82;
+    stroke: #faab82
 }
 
 .local {
-    stroke:#0000ff;
+    stroke: #00f
 }
 
 .fu_hsing {
-    stroke:#00bfff;
+    stroke: #00bfff
 }
 
 .ordinary {
-    stroke:#ff1493;
+    stroke: #ff1493
 }
 
 .special {
-    stroke:#ff1493;
+    stroke: #ff1493
+}
+
+.taroko_mark {
+    fill: #20b2aa
+}
+
+.puyuma_mark {
+    fill: red
+}
+
+.tze_chiang_mark {
+    fill: orange
+}
+
+.tze_chiang_diesel_mark {
+    fill: gold
+}
+
+.emu1200_mark {
+    fill: #ff008c
+}
+
+.emu300_mark {
+    fill: #f44
+}
+
+.emu3000_mark {
+    fill: #000
+}
+
+.chu_kuang_mark {
+    fill: #faab82
+}
+
+.local_mark {
+    fill: #00f
+}
+
+.fu_hsing_mark {
+    fill: #00bfff
+}
+
+.ordinary_mark {
+    fill: #ff1493
+}
+
+.special_mark {
+    fill: #ff1493
+}
+
+.zhongxing {
+    stroke: red;
+}
+
+.alishan_local {
+    stroke: orange;
+}
+
+.theme {
+    stroke: #ff1493;
+}
+
+.alishan {
+    stroke: #00f;
+}
+
+.chushan1 {
+    stroke: #faab82;
+}
+
+.chushan2 {
+    stroke: #faab82;
+}
+
+.kuaimu {
+    stroke: #20b2aa;
 }
