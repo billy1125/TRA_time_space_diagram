@@ -46,7 +46,7 @@ def check_undiscontinuous_order(train_time_space):
 # 車次線路徑與車次號標註
 def set_train_path(line_kind, train_id, car_class, train_time_space, diagrams):
 
-    color = Globals.CarKind.get(car_class, 'special')
+    color = Globals.CarKind.get(car_class, 'others')
     # svg線條資訊，藉由每一個要通過時間與地點建立svg座標值
     undiscontinuous_order_number = check_undiscontinuous_order(train_time_space)
     df_length = train_time_space.shape[0]

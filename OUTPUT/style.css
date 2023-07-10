@@ -8,6 +8,10 @@ svg {
     font-size: 14px
 }
 
+.hour {
+    fill: #2e2e1f
+}
+
 path {
     transition-property: stroke-width;
     transition-duration: 1s;
@@ -24,10 +28,6 @@ path:hover {
 
 path:focus {
     stroke-width: 6
-}
-
-.hour {
-    fill: #2e2e1f
 }
 
 .hour_midnight {
@@ -81,7 +81,7 @@ path:focus {
     stroke: #20b2aa
 }
 
-.puyuma {
+.puyuma, .direct {
     stroke: red
 }
 
@@ -105,11 +105,11 @@ path:focus {
     stroke: #000
 }
 
-.chu_kuang {
+.chu_kuang, .skip_stop {
     stroke: #faab82
 }
 
-.local {
+.local, .all_stop {
     stroke: #00f
 }
 
@@ -126,7 +126,11 @@ path:focus {
 }
 
 .special {
-    stroke: #ff1493
+    stroke: #ff1493;
+}
+
+.others {
+    stroke: grey;
 }
 
 .taroko_mark {
@@ -179,6 +183,10 @@ path:focus {
 
 .special_mark {
     fill: #ff1493
+}
+
+.others_mark {
+    stroke: grey;
 }
 
 .zhongxing {
