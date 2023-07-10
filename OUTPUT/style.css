@@ -8,10 +8,6 @@ svg {
     font-size: 14px
 }
 
-.hour {
-    fill: #2e2e1f
-}
-
 path {
     transition-property: stroke-width;
     transition-duration: 1s;
@@ -28,6 +24,10 @@ path:hover {
 
 path:focus {
     stroke-width: 6
+}
+
+.hour {
+    fill: #2e2e1f
 }
 
 .hour_midnight {
@@ -113,6 +113,10 @@ path:focus {
     stroke: #00f
 }
 
+.local_express {
+    stroke: #00a6ff
+}
+
 .fu_hsing {
     stroke: #00bfff
 }
@@ -159,6 +163,10 @@ path:focus {
 
 .local_mark {
     fill: #00f
+}
+
+.local_express_mark {
+    fill: #00a6ff
 }
 
 .fu_hsing_mark {
