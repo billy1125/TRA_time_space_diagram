@@ -1,3 +1,4 @@
+/* 基本設定 */
 line {
     stroke-width: .3;
     font-weight: 100
@@ -30,6 +31,7 @@ path:focus {
     stroke-width: 6
 }
 
+/* 主要基線 */
 .hour_midnight {
     fill: red;
     font-weight: 700
@@ -77,15 +79,16 @@ path:focus {
     stroke: #bfbfbf
 }
 
-.taroko {
+/* 車次線 */
+.taroko, .kuaimu {
     stroke: #20b2aa
 }
 
-.puyuma, .direct {
+.puyuma, .zhongxing, .direct {
     stroke: red
 }
 
-.tze_chiang {
+.tze_chiang, .alishan_local {
     stroke: orange
 }
 
@@ -105,11 +108,11 @@ path:focus {
     stroke: #000
 }
 
-.chu_kuang, .skip_stop {
+.chu_kuang, .chushan1, .chushan2, .skip_stop {
     stroke: #faab82
 }
 
-.local, .all_stop {
+.local, .alishan, .all_stop {
     stroke: #00f
 }
 
@@ -121,7 +124,7 @@ path:focus {
     stroke: #00bfff
 }
 
-.ordinary {
+.ordinary, .theme {
     stroke: #ff1493
 }
 
@@ -133,6 +136,7 @@ path:focus {
     stroke: grey;
 }
 
+/* 即時列車位置點 */
 .taroko_mark {
     fill: #20b2aa
 }
@@ -187,32 +191,4 @@ path:focus {
 
 .others_mark {
     stroke: grey;
-}
-
-.zhongxing {
-    stroke: red;
-}
-
-.alishan_local {
-    stroke: orange;
-}
-
-.theme {
-    stroke: #ff1493;
-}
-
-.alishan {
-    stroke: #00f;
-}
-
-.chushan1 {
-    stroke: #faab82;
-}
-
-.chushan2 {
-    stroke: #faab82;
-}
-
-.kuaimu {
-    stroke: #20b2aa;
 }
