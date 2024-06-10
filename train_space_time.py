@@ -108,7 +108,8 @@ class SpaceTime:
                     branch = Route[station]['CCW_BRANCH']
                     if branch != '':
                         if station == '7360':  # 平溪深澳線處理，瑞芳判斷
-                            if end_station == '7362':
+                            # if end_station == '7362':
+                            if '7362' in keys or '7361' in keys:
                                 km += float(Route[station]['CCW_BRANCH_KM'])
                                 station = '7361'  # 指定到海科館站
                             elif end_station != '7362':
