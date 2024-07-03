@@ -5,7 +5,7 @@
 |專案名稱|TRA_time_space_diagram|
 |Author|呂卓勳 Cho-Hsun Lu|
 |E-mail|billy1125@gmail.com|
-|版本|1.3.7|
+|版本|1.3.8|
 
 ## 緣起
 
@@ -23,8 +23,8 @@
 
 目前本程式主要於 Python 3.9x 開發，除此之外本程式需要以下套件，包括：
 
-* [Pandas](https://github.com/pandas-dev/pandas)：用於列車推算通過車站時間，本程式開發使用版本為 2.0.0
-* [beautifulsoup4](https://github.com/getanewsletter/BeautifulSoup4)：用於擷取台鐵 JSON，本程式開發使用版本為 4.11.1
+* [Pandas](https://github.com/pandas-dev/pandas)：用於列車推算通過車站時間，本程式開發使用版本為 2.2.2
+* [beautifulsoup4](https://github.com/getanewsletter/BeautifulSoup4)：用於擷取台鐵 JSON，本程式開發使用版本為 4.12.3
 
 進度條程式碼則採用 Vladimir Ignatev 所設計的[程式](https://gist.github.com/davincif/3e1cb5ef1c4007d4f5ca690d68db8e7b)。svg 繪圖部分程式感謝 [nedwu](https://github.com/nedwu)的啟發，並且參考其[專案部分程式碼](https://github.com/nedwu/TRAOpenDataDiagramer)。
 
@@ -119,7 +119,7 @@ $ python download_json.py
 
 ## 閱讀運行圖之方法
 
-本程式所轉換之運行圖，檔案副檔名為 **.svg**，請使用瀏覽器直接開啟檔案，請注意，請將 OUTPUT 檔案夾中的 **stlye.css** 樣式檔案與運行圖置放於同一檔案夾中，再以瀏覽器開啟運行圖。目前為止，本程式所轉換之運行圖於 Google Chrome、Mozilla Firefox、Opera、Apple Safari 均能正常顯示，至於其他瀏覽器尚未實地測試，若有問題也歡迎回報。
+本程式所轉換之運行圖，檔案副檔名為 **.svg**，請使用瀏覽器直接開啟檔案即可，本程式所轉換之運行圖於 Google Chrome、Mozilla Firefox、Opera、Apple Safari 均能正常顯示，至於其他瀏覽器尚未實地測試，若有問題也歡迎回報。
 
 ## 致謝
 

@@ -258,7 +258,7 @@ class SpaceTime:
                 station_id.append(StationId)
                 station.append(StationName)
                 loc.append(float(KM))
-                time.append(np.NaN)
+                time.append(np.nan)
                 stop_station_order.append(-1)
 
         _df_estimate_time_space = pd.DataFrame({"Station": station, "Time": time, "Loc": loc, "StationID": station_id, "StopStation": stop_station_order})
@@ -293,7 +293,9 @@ class SpaceTime:
         # select_df.set_index('Loc', inplace=True)
         # select_df.interpolate(method='index' , inplace=True)
         #  計算沒有時間的通過車站插補資料，計算插補資料的原因主要是為了各路線端點車站可能列車會直接通過，譬如北迴線有的列車會直接通過蘇澳新，必須要計算出大致的通過時間
-        _df_estimate_time_space.interpolate(method='linear' , inplace=True)
+        numeric_columns = _df_estimate_time_space.select_dtypes(include=[np.number]).columns
+        _df_estimate_time_space[numeric_columns] = _df_estimate_time_space[numeric_columns].interpolate(method='linear')
+        # _df_estimate_time_space.interpolate(method='linear' , inplace=True)
         _df_estimate_time_space.reset_index()
 
         return _df_estimate_time_space
@@ -343,7 +345,7 @@ class SpaceTime:
         # for key, value in _operation_lines.items():
         #     index_label = value.query('Time >= 2880').index.tolist()
         #     if len(index_label) >= 2:
-        #         row_value = ['跨午夜', "-1", 2880, np.NaN, "Y", value.loc[index_label[0], 'StopOrder'] - 1]
+        #         row_value = ['跨午夜', "-1", 2880, np.nan, "Y", value.loc[index_label[0], 'StopOrder'] - 1]
         #         df = self._insert_row(index_label[0], value, row_value)  # 插入一個虛擬的跨午夜車站
 
         #         df = df.set_index('Time').interpolate(method='index')  # 依據時間估計跨午夜的位置

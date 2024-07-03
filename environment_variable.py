@@ -9,7 +9,7 @@ class GlobalVariables:
         return cls._instance 
 
     def __init__(self):
-        self.Version = "1.3.7"                # 版本號
+        self.Version = "1.3.8"                # 版本號
         self.JsonFolder = "JSON"              # 台鐵時刻表JSON預設置放資料夾
         self.OutputFolder = "OUTPUT"          # 運行圖檔案預設匯出目標資料夾
         self.DiagramHours = (4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 1, 2, 3, 4, 5, 6) # 一天每一小時的文字清單
