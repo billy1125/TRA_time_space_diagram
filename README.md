@@ -5,7 +5,7 @@
 |專案名稱|TRA_time_space_diagram|
 |Author|呂卓勳 Cho-Hsun Lu|
 |E-mail|billy1125@gmail.com|
-|版本|1.3.8|
+|版本|1.3.9|
 
 ## 緣起
 
@@ -21,7 +21,7 @@
 
 ## Python 版本與所需相關程式開發套件
 
-目前本程式主要於 Python 3.9x 開發，除此之外本程式需要以下套件，包括：
+目前本程式基於 Python 3.12.4 開發，除此之外本程式需要以下套件，包括：
 
 * [Pandas](https://github.com/pandas-dev/pandas)：用於列車推算通過車站時間，本程式開發使用版本為 2.2.2
 * [beautifulsoup4](https://github.com/getanewsletter/BeautifulSoup4)：用於擷取台鐵 JSON，本程式開發使用版本為 4.12.3
@@ -46,7 +46,7 @@ $ python batch.py
 
 ```
 ************************************
-台鐵JSON轉檔運行圖程式 - 版本：1.3.7
+台鐵JSON轉檔運行圖程式 - 版本：1.3.9
 ************************************
 ```
 之後會顯示本程式的標題，並且顯示版本。
@@ -83,27 +83,26 @@ $ python batch.py
 如果您在置放 JSON 的檔案夾中沒有台鐵 JSON 檔案，則會顯示以上錯誤訊息。
 程式繪製完成的運行圖，將依照不同台鐵營運路線，分別置放於 OUTPUT 檔案夾之中，檔名則與轉換的 JSON 檔名相同。
 
-## 參數模式
+## 批次轉檔模式
 
-本程式支援以參數模式執行，您可以直接輸入以下參數，以半形空白隔開，直接執行無須一一回答問題。參數包括：
-
-* 需轉換台鐵 JSON 檔案存放資料夾位置
-* 運行圖轉換完成儲存位置
-* 特定車次之車次號，若要轉換所有車次，參數為 ALL
-
-若您不改動 JSON 與 OUTPUT 檔案夾位置，並且指定要轉換第 3671 車次普快車，可以這樣輸入：
+本程式能以批次模式執行，程式可將 JSON 所在的資料夾逐一批次轉檔，再儲存到輸出資料夾。參數為`「-b」`，可見以下語法：
 
 ```
-$ python batch.py JSON OUTPUT 3671
+$ python batch.py -b
 ```
 
-若您改動 JSON 與 OUTPUT 檔案夾位置，分別為 **/Users/username/Desktop/JSON** 與 **/Users/username/Desktop/OUTPUT**，並且指定要轉換所有車次，可以這樣輸入：
+請注意，若您要改動台鐵 JSON 檔案、運行圖輸出與轉檔後 JSON 檔案資料夾位置，請修改檔案`「config.ini」`，檔案內容如下，可依照您的需要修改：
 
 ```
-$ python batch.py /Users/username/Desktop/JSON /Users/username/Desktop/OUTPUT ALL
+[DEFAULT]
+JsonFolder = JSON               # 台鐵 JSON 檔案預設資料夾
+OutputFolder = OUTPUT           # 運行圖輸出預設資料夾
+BackupFolder = JSON_BACKUP      # 轉檔後 JSON 檔案預設資料夾
 ```
 
-執行後，程式將自動將所有置放於您指定的 JSON 檔案夾中的台鐵 JSON 進行轉檔，並且依照不同台鐵營運路線，置放於您指定的 OUTPUT 檔案夾之中。
+以批次模式執行後，程式將自動將所有置放於您指定的 JSON 檔案夾中的台鐵 JSON 進行轉檔，並且依照不同台鐵營運路線，置放於您指定的 OUTPUT 檔案夾之中，最後將轉檔後的 JSON 資料夾移動至轉檔後 JSON 檔案預設資料夾。
+
+> 檔案夾位置可指定完整的硬碟路徑，請注意：`請勿有中文字元，可能會出現未預期的錯誤`。
 
 ## 擷取台鐵 JSON 程式
 
