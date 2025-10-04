@@ -1,90 +1,84 @@
-from urllib.request import Request, urlopen
+import requests
 from bs4 import BeautifulSoup
-import urllib.request
-import zipfile
-import os
-import sys
-import ssl
+from pathlib import Path
+import time
+import re
+import urllib3
 
+# 忽略 SSL 警告
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def main():
-    ssl._create_default_https_context = ssl._create_unverified_context
-    r = urllib.request.urlopen('https://google.com')
-    print(r.status)
-    print(r)
+BASE_URL = "https://ods.railway.gov.tw"
+LIST_URL = BASE_URL + "/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list/"
+
+DOWNLOAD_DIR = Path("downloads")
+DOWNLOAD_DIR.mkdir(exist_ok=True)
+
 
 def read_url(url):
-    url_json = []
-
-    url = url.replace(" ","%20")
-    req = Request(url)
-    a = urlopen(req).read()
-    soup = BeautifulSoup(a, 'html.parser')
-    x = (soup.find_all('a'))
-    for i in x:
-        file_name = i.extract().get_text()
-        xx = 'https://ods.railway.gov.tw' + i.extract().get('href')
-        # print(file_name)
-        url_new = url + file_name
-        url_new = url_new.replace(" ","%20")
-        if(file_name[-1]=='/' and file_name[0]!='.'):
-            read_url(url_new)
-        url_json.append([url_new, file_name, xx])
-
-    return url_json
-
-def download_tra_json(url_json):
-
-##    strUrl = 'http://163.29.3.98/json/'
-##    strFileExtent = '.zip'
-##    strdate = str_date
-##
-##    strFullUrl = strUrl + strdate + strFileExtent #完整網址
-##    strZipFile = str_date + strFileExtent #檔案名稱
-##
-    strLog =''
-    
     try:
-        #strLog += '下載XML\n'
-        urllib.request.urlretrieve(url_json[2], url_json[1])
+        headers = {"User-Agent": "Mozilla/5.0"}
+        # verify=False 關閉 SSL 驗證
+        resp = requests.get(url, headers=headers, timeout=10, verify=False)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"無法連線 {url}: {e}")
+        return []
 
-        if os.path.exists(url_json[1]):
-            strLog += '下載成功' + '\n'
-        else:
-            strLog += '下載失敗' + '\n'
+    soup = BeautifulSoup(resp.text, "html.parser")
+    links = []
+
+    for a in soup.find_all("a", href=True):
+        file_name = a.get_text(strip=True)
+        href = a["href"]
+
+        if not href.startswith("http"):
+            href = BASE_URL + href
+
+        links.append((file_name if file_name else Path(href).name, href))
+
+    return links
 
 
-       # strLog += '解壓縮XML\n'
-       #  zip_ref = zipfile.ZipFile(url_json[1], 'r')
-       #  zip_ref.extractall()
-       #  zip_ref.close()
+def sanitize_filename(name: str) -> str:
+    """移除檔名裡不合法的字元"""
+    return re.sub(r'[\\/*?:"<>|]', "_", name)
 
 
+def download_file(file_name, file_url):
+    headers = {"User-Agent": "Mozilla/5.0"}
+    try:
+        # verify=False 關閉 SSL 驗證
+        with requests.get(file_url, headers=headers, stream=True, timeout=20, verify=False) as r:
+            r.raise_for_status()
+
+            cd = r.headers.get("Content-Disposition")
+            if cd and "filename=" in cd:
+                new_file_name = cd.split("filename=")[-1].strip('"')
+            else:
+                new_file_name = file_name or Path(file_url).name
+
+            new_file_name = sanitize_filename(new_file_name)
+            save_path = DOWNLOAD_DIR / new_file_name
+
+            if save_path.exists():
+                print(f"已存在，跳過: {new_file_name}")
+                return
+
+            with open(save_path, "wb") as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+
+            print(f"下載完成: {new_file_name}")
+
+    except requests.RequestException as e:
+        print(f"下載失敗 {file_url}: {e}")
 
 
-        # if os.path.exists(url_json[1]):
-        #     strLog += '已刪除' + url_json[1] + '\n'
-        #     os.remove(url_json[1])
-        # else:
-        #     strLog += '沒有' + url_json[1] + '\n'
+if __name__ == "__main__":
+    items = read_url(LIST_URL)
+    print(f"找到 {len(items)} 個連結")
 
-            
-    except OSError as err:
-        strLog += "OS error: {0}".format(err) + '\n'
-    except ValueError:
-        strLog += "Could not convert data to an integer." + '\n'
-    except:
-        strLog += "Unexpected error:", sys.exc_info()[0] + '\n'
-        
-if __name__ == '__main__':
-    main()
-
-# items = read_url("https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list")
-items = read_url("https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list/")
-# last_file_number = len(items) - 3
-# download_tra_json(items[last_file_number])
-# download_tra_json(items[1])
-
-for item in read_url("https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list/"):
-    print(item[2])
-    download_tra_json(item)
+    for file_name, file_url in items:
+        download_file(file_name, file_url)
+        time.sleep(2)  # 延遲避免伺服器過載
