@@ -3,8 +3,6 @@
 |項目|內容|
 |---|---|
 |專案名稱|TRA_time_space_diagram|
-|Author|呂卓勳 Cho-Hsun Lu|
-|E-mail|billy1125@gmail.com|
 |版本|1.3.9|
 
 ## 緣起
@@ -128,5 +126,6 @@ $ python download_json.py
 * 張柏皓(https://www.facebook.com/profile.php?id=100066832751160) 於 2023.04.19 通報 6105、6702 車次錯誤問題
 * 王羿
 (https://www.facebook.com/profile.php?id=100033320060400) 於 2023.06.03 通報 2023.06.22 5374 車次錯誤問題
+
 
 感謝以上網友對於本程式的建議與錯誤回報，您的協助能讓本程式更臻完整，感謝！
