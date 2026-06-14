@@ -24,7 +24,9 @@
 目前本程式基於 Python 3.12.4 開發，除此之外本程式需要以下套件，包括：
 
 * [Pandas](https://github.com/pandas-dev/pandas)：用於列車推算通過車站時間，本程式開發使用版本為 2.2.2
-* [beautifulsoup4](https://github.com/getanewsletter/BeautifulSoup4)：用於擷取台鐵 JSON，本程式開發使用版本為 4.12.3
+* [NumPy](https://github.com/numpy/numpy)：搭配 Pandas 進行數值運算
+* [beautifulsoup4](https://github.com/getanewsletter/BeautifulSoup4)：用於解析台鐵 JSON 下載頁面，本程式開發使用版本為 4.12.3
+* [requests](https://github.com/psf/requests)、[urllib3](https://github.com/urllib3/urllib3)：用於批次下載台鐵 JSON 時刻表
 
 進度條程式碼則採用 Vladimir Ignatev 所設計的[程式](https://gist.github.com/davincif/3e1cb5ef1c4007d4f5ca690d68db8e7b)。svg 繪圖部分程式感謝 [nedwu](https://github.com/nedwu)的啟發，並且參考其[專案部分程式碼](https://github.com/nedwu/TRAOpenDataDiagramer)。
 
@@ -32,7 +34,7 @@
 
 ## 使用方法
 
-請將所有程式解壓縮到同一檔案夾，包括 CSV、JSON、OUTPUT 等檔案夾均需於同一檔案夾，再將所需要轉檔的台鐵 JSON 檔案，置放於 JSON 檔案夾之中，台鐵 JSON 檔案可至[台鐵公開資料網站](http://163.29.3.98/json/)中下載。
+請將所有程式解壓縮到同一檔案夾，包括 CSV、JSON、OUTPUT 等檔案夾均需於同一檔案夾，再將所需要轉檔的台鐵 JSON 檔案，置放於 JSON 檔案夾之中，台鐵 JSON 檔案可至[台鐵公開資料網站](https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list/)中下載，或使用本程式提供的 download_json.py 批次下載（詳見下方說明）。
 
 程式以作業系統的命令行 (command-line) 模式執行，執行方式包括一般模式與參數模式，分述如下：
 
@@ -106,13 +108,35 @@ BackupFolder = JSON_BACKUP      # 轉檔後 JSON 檔案預設資料夾
 
 ## 擷取台鐵 JSON 程式
 
-若您需要批次下載當日之台鐵所有 JSON 程式，請以命令行模式，執行 JSON 檔案夾中之 download_json.py 程式，執行語法為：
+若您需要批次下載台鐵的 JSON 時刻表，請以命令行模式，執行 JSON 檔案夾中之 download_json.py 程式，執行語法為：
 
 ```
 $ python download_json.py
 ```
 
-該程式將直接下載[台鐵公開資料網站](http://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list)網站中所有 JSON 檔案，並且置放於 JSON 檔案夾中。
+該程式會先讀取[台鐵公開資料網站](https://ods.railway.gov.tw/tra-ods-web/ods/download/dataResource/railway_schedule/JSON/list/)中可下載的 JSON 檔案清單，並列出讓您選擇，例如：
+
+```
+可下載檔案：
+
+  1. 20260614.json
+  2. 20260615.json
+  3. 20260616.json
+  ...
+
+輸入要下載的編號
+例如：1-5 或 1,3,8
+直接按 Enter = 全部下載
+輸入 q = 離開程式
+
+選擇:
+```
+
+您可以輸入單一編號、以逗號分隔的多個編號（例如 `1,3,8`）、或以連字號表示的範圍（例如 `1-5`）；直接按下 `Enter` 會下載全部，輸入 `q` 則離開程式。
+
+若下載目標已有同名檔案，程式會詢問是否覆蓋，可選擇 `[y]`是、`[n]`否、`[a]`全部覆蓋、`[s]`全部略過、`[q]`離開。
+
+> 注意：下載的 JSON 檔案會儲存於程式執行目錄下的 `downloads` 子資料夾，若要轉檔請再將檔案移至 `JSON` 資料夾。由於台鐵公開資料站的 SSL 憑證常有異常，本程式預設關閉 SSL 驗證（`verify=False`）。
 
 > 附註：台鐵每日均提供當日至 60 天內每日之時刻表資料，以 JSON 格式提供。如果想要看相關資料定義的說明，可至[政府資料開放平台](https://data.gov.tw/dataset/6138)參考。
 
